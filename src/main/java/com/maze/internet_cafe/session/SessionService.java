@@ -85,7 +85,6 @@ public class SessionService {
             throw new IllegalStateException("Session is not running");
         }
 
-        // Permission check: owner or admin/agent
         boolean isOwner = actingUser != null && s.getUser() != null && actingUser.getId() != null && actingUser.getId().equals(s.getUser().getId());
         boolean hasAdminOrAgent = authorities != null && authorities.stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()) || "ROLE_AGENT".equals(a.getAuthority()));
         if (!isOwner && !hasAdminOrAgent) {
