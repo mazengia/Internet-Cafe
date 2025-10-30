@@ -25,7 +25,6 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final ComputerRepository computerRepository;
-    private final BranchRepository branchRepository;
     private final BillingService billingService;
     private final ModelMapper mapper = new ModelMapper();
 
