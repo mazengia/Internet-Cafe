@@ -98,7 +98,6 @@ public class SessionService {
 
         billingService.calculate(s);
 
-        // mark computer available
         Computer computer = s.getComputer();
         computer.setStatus(com.maze.internet_cafe.computer.ComputerStatus.AVAILABLE);
         computerRepository.save(computer);
