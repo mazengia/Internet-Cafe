@@ -99,6 +99,4 @@ public class JwtUtil implements Serializable {
         byte[] keyBytes = Decoders.BASE64.decode(this.secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
-
 }
