@@ -26,7 +26,6 @@ public class SecurityConfig {
     private final UserDetailsServiceImp userDetailsServiceImp;
     private final JwtUtil jwtUtil;
 
-    // AuthenticationManager bean
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
