@@ -56,7 +56,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Databases -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
