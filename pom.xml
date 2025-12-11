@@ -104,9 +104,6 @@
             <scope>runtime</scope>
         </dependency>
         <!-- Micrometer -->
-        git add .
-        git commit -m"fix pom"
-        git push
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
