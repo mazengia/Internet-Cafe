@@ -80,7 +80,6 @@
             <version>17.0.1</version>
         </dependency>
 
-        <!-- JSON / JWT -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
