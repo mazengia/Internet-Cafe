@@ -104,6 +104,7 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Micrometer -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
