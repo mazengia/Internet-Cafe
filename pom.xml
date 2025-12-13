@@ -155,7 +155,6 @@
             <version>1.18.38</version>
             <optional>true</optional>
         </dependency>
-        <!-- Changes to pom.xml with Spring Boot 4.0 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
@@ -165,7 +164,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webclient</artifactId>
         </dependency>
-        <!-- The required test dependencies are also modularized -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
