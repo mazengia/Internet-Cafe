@@ -104,7 +104,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Micrometer -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
@@ -126,7 +125,6 @@
             <version>1.19.0</version>
         </dependency>
 
-        <!-- Validation -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -138,7 +136,6 @@
             <version>3.0.2</version>
         </dependency>
 
-        <!-- Utilities -->
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
