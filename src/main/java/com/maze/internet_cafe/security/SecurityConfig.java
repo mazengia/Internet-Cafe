@@ -37,12 +37,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(11);
     }
 
-    // SecurityFilterChain replaces configure(HttpSecurity)
     @Bean
     public SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // Swagger/OpenAPI endpoints
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
@@ -50,14 +50,17 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
+                        // Preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // allow authentication endpoint and agent registration/heartbeat publicly
+                        // Public endpoints
                         .requestMatchers(SecurityConstants.AUTH_LOGIN_URL, "/api/agents/register", "/api/agents/heartbeat").permitAll()
-                        // all other API endpoints require authentication
+                        // All others require authentication
                         .anyRequest().authenticated()
                 )
+                // Add JWT filters
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsServiceImp))
+                // Stateless session
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
