@@ -18,7 +18,7 @@ public class BillingService {
 
         BigDecimal cost = BigDecimal.valueOf(minutes)
                 .multiply(session.getPricePerHour())
-                .divide(BigDecimal.valueOf(60), 2, RoundingMode.UP);
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
 
         session.setTotalMinutes(minutes);
         session.setTotalCost(cost);

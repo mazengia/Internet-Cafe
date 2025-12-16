@@ -32,11 +32,16 @@ public class Session {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    private BigDecimal pricePerHour;
     private Long totalMinutes;
-    private BigDecimal totalCost;
 
     @Enumerated(EnumType.STRING)
     private SessionStatus status;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal pricePerHour;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal totalCost;
+
 
 }

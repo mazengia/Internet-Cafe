@@ -38,6 +38,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
@@ -47,25 +48,30 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/api/v1/computers/**",
+                                "/api/agents/heartbeat"
                         ).permitAll()
                         // Preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Public endpoints
-                        .requestMatchers(SecurityConstants.AUTH_LOGIN_URL, "/api/agents/register", "/api/agents/heartbeat").permitAll()
-                        // All others require authentication
+                        // Public endpoints for agent
+
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
-                )
-                // Add JWT filters
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsServiceImp))
-                // Stateless session
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                );
+
+        // Add JWT Authorization filter BEFORE UsernamePasswordAuthenticationFilter
+        http.addFilterBefore(
+                new JWTAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsServiceImp),
+                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
+        );
+
+        // Stateless session
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
 
-    // CORS configuration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

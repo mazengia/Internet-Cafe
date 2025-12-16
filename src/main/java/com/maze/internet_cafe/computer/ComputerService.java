@@ -45,7 +45,9 @@ public class ComputerService {
         c.setIpAddress(dto.getIpAddress());
         c.setStatus(ComputerStatus.AVAILABLE);
         if (dto.getBranchId() != null) {
-            Branch b = branchRepository.findById(dto.getBranchId())
+
+//            Branch b = branchRepository.findById(dto.getBranchId())
+            Branch b = branchRepository.findById(Long.valueOf(1))
                     .orElseThrow(() -> new EntityNotFoundException(Branch.class, "id", dto.getBranchId().toString()));
             c.setBranch(b);
         }

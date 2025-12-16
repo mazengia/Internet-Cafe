@@ -21,13 +21,13 @@ public class Computer {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private OSType osType; // WINDOWS, LINUX
-
+    private OSType osType;
+    @Column(unique = true)
     private String macAddress;
     private String ipAddress;
 
     @Enumerated(EnumType.STRING)
-    private ComputerStatus status;
+    private ComputerStatus status = ComputerStatus.AVAILABLE;
 
     @ManyToOne
     private Branch branch;

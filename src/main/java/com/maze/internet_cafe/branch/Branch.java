@@ -20,7 +20,7 @@ public class Branch {
     private String name;
     private String city;
 
-    @Column(nullable = false)
+    @Column(precision = 10, scale = 2)
     private BigDecimal pricePerHour;
 
     private LocalDateTime createdAt = LocalDateTime.now();

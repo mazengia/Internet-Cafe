@@ -9,6 +9,7 @@ import com.maze.internet_cafe.service.BillingService;
 import com.maze.internet_cafe.session.dto.SessionDto;
 import com.maze.internet_cafe.session.dto.SessionStartRequest;
 import com.maze.internet_cafe.session.dto.SessionStopRequest;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.Collection;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class SessionService {
 
     private final SessionRepository sessionRepository;
@@ -29,12 +31,6 @@ public class SessionService {
     private final BillingService billingService;
     private final ModelMapper mapper = new ModelMapper();
 
-    public SessionService(SessionRepository sessionRepository, ComputerRepository computerRepository, BranchRepository branchRepository, BillingService billingService) {
-        this.sessionRepository = sessionRepository;
-        this.computerRepository = computerRepository;
-        this.branchRepository = branchRepository;
-        this.billingService = billingService;
-    }
 
     public SessionDto start(Long computerId, SessionStartRequest req, User user) {
         Computer computer = computerRepository.findById(computerId)
@@ -70,11 +66,11 @@ public class SessionService {
      * Stop a session. This method enforces permission: the actingUser must be the owner of the session
      * or must have ROLE_ADMIN or ROLE_AGENT authority.
      *
-     * @param computerId    computer id (for validation)
-     * @param sessionId     session id to stop
-     * @param req           optional stop request (contains endTime)
-     * @param actingUser    the user performing the action (may be null for system calls)
-     * @param authorities   authorities of the acting principal
+     * @param computerId  computer id (for validation)
+     * @param sessionId   session id to stop
+     * @param req         optional stop request (contains endTime)
+     * @param actingUser  the user performing the action (may be null for system calls)
+     * @param authorities authorities of the acting principal
      * @return updated SessionDto
      */
     public SessionDto stop(Long computerId, Long sessionId, SessionStopRequest req, User actingUser, Collection<? extends GrantedAuthority> authorities) {

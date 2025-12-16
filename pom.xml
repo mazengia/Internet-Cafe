@@ -202,9 +202,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.maze.internet_cafe.service.AgentApplication</mainClass>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <mainClass>com.maze.internet_cafe.service.AgentApplication</mainClass>-->
+<!--                </configuration>-->
             </plugin>
         </plugins>
     </build>

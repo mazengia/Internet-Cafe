@@ -20,7 +20,7 @@ public class ComputerController {
         this.computerService = computerService;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','AGENT')")
+//    @PreAuthorize("hasAnyRole('ADMIN','AGENT')")
     @PostMapping
     public ResponseEntity<ComputerDto> create(@Valid @RequestBody ComputerCreateDto dto) {
         ComputerDto created = computerService.create(dto);
