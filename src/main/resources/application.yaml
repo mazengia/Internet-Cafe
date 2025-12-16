@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: internet-cafe
+
+
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://localhost:1433;encrypt=false;databaseName=shareholder_attendance
+    username: sa
+    password: P@ss1234
+
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  hateoas:
+    use-hal-as-default-json-media-type: false
+
+  data:
+    rest:
+      base-path: /api
+
+server:
+  port: 8080
+
+jwt:
+  secret: sP8FIs1KWI1Czg+bHFQQcDyulktrPJsY5TyoGe5P7CPNi/uckxAb0OTqPY3/IybiSR7dXnHXktk8x2NzNJixdg==
