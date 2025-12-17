@@ -15,8 +15,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     Optional<Session> findByComputerIdAndStatus(Long computerId, SessionStatus status);
     Page<Session> findByComputerId(Long computerId, Pageable pageable);
 
-    // Aggregate by date using JPA function('date', ...) to obtain a DB-specific date value
-    @Query("SELECT function('date', s.endTime), COUNT(s), SUM(s.totalMinutes), SUM(s.totalCost) " +
+     @Query("SELECT function('date', s.endTime), COUNT(s), SUM(s.totalMinutes), SUM(s.totalCost) " +
             "FROM Session s WHERE s.endTime BETWEEN :from AND :to GROUP BY function('date', s.endTime) ORDER BY function('date', s.endTime)")
     List<Object[]> dailyAggregationByDate(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 }
