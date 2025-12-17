@@ -156,7 +156,6 @@ public class AgentService {
             WebClient.create(SERVER)
                     .post()
                     .uri("/sessions/terminate")
-                    // Important: Ensure the server is looking for 'name' if you send machineName()
                     .bodyValue(Map.of("mac", NetworkUtil.machineName()))
                     .retrieve()
                     .toBodilessEntity()
@@ -167,7 +166,6 @@ public class AgentService {
         }
     }
 
-    // Expose the start method so the monitor can call it
     public void restartSession() {
         if (currentComputerId != null) {
             startAutoSession(currentComputerId);
