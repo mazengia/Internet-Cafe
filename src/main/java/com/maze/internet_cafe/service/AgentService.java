@@ -151,8 +151,6 @@ public class AgentService {
             }
         }));
     }
-    // Inside AgentService.java
-// Make sure this method is robust
     public void stopActiveSession() {
         try {
             WebClient.create(SERVER)
