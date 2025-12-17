@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +22,17 @@ public class SessionBroadcaster {
     public void broadcast() {
         sessionRepo.findByStatus(SessionStatus.RUNNING).forEach(s -> {
             long sec = ChronoUnit.SECONDS.between(s.getStartTime(), LocalDateTime.now());
-            Map<String, Object> payload = Map.of("id", s.getId(), "elapsed", sec);
-            template.convertAndSend(Optional.of("/topic/sessions"), payload);
+
+            // Construct payload without Optional
+            Map<Object, Object> payload = Map.of(
+                    "id", s.getId(),
+                    "elapsed", sec,
+                    "macAddress", s.getComputer().getMacAddress(),
+                    "name", s.getComputer().getName()
+            );
+
+            // Correct: template.convertAndSend(String destination, Object payload)
+            template.convertAndSend("/topic/sessions", payload);
         });
     }
 }

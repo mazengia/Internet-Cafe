@@ -35,4 +35,14 @@ public class NetworkUtil {
         }
         return "UNKNOWN";
     }
+
+    public static String machineName() {
+        try {
+            String hostname = InetAddress.getLocalHost().getHostName();
+            return hostname;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "UNKNOWN-HOST";
+        }
+    }
 }

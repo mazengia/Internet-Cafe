@@ -50,7 +50,9 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**",
                                 "/api/v1/computers/**",
-                                "/api/agents/heartbeat"
+                                "/api/agents/heartbeat",
+                                "/ws/**",
+                                "/sessions/**"
                         ).permitAll()
                         // Preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

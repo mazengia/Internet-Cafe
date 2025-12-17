@@ -67,3 +67,11 @@ Run (edit credentials/ids as needed):
 ```
 # Internet-Cafe
 # Internet-Cafe
+
+sudo mv /home/mtesfa/Downloads/internet-cafe/target/internet-cafe-0.0.1-SNAPSHOT.jar /opt/internet-cafe/internet-cafe.jar
+
+sudo systemctl daemon-reload
+sudo systemctl restart internet-cafe
+sudo systemctl status internet-cafe
+
+sudo journalctl -u internet-cafe -b --no-pager -n 50

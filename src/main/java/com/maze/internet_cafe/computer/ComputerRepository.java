@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ComputerRepository extends JpaRepository<Computer, Long> {
-    Optional<Computer> findByMacAddress(String macAddress);
+    Optional<Computer> findByName(String macAddress);
     Page<Computer> findByBranchId(Long branchId, Pageable pageable);
 }

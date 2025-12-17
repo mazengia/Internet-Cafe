@@ -5,6 +5,8 @@ import com.maze.internet_cafe.computer.dto.ComputerCreateDto;
 import com.maze.internet_cafe.computer.dto.ComputerDto;
 import com.maze.internet_cafe.exception.EntityNotFoundException;
 import com.maze.internet_cafe.branch.BranchRepository;
+import com.maze.internet_cafe.session.SessionService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,53 +14,62 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityExistsException;
+
 import java.time.LocalDateTime;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ComputerService {
 
     private final ComputerRepository computerRepository;
+    private final SessionService sessionService;
     private final BranchRepository branchRepository;
     private final ModelMapper mapper = new ModelMapper();
 
-    public ComputerService(ComputerRepository computerRepository, BranchRepository branchRepository) {
-        this.computerRepository = computerRepository;
-        this.branchRepository = branchRepository;
-    }
 
     public ComputerDto create(ComputerCreateDto dto) {
-        // check duplicate MAC
-        computerRepository.findByMacAddress(dto.getMacAddress()).ifPresent(c -> {
-            throw new EntityExistsException("Computer with macAddress already exists");
-        });
+        Computer computer = computerRepository.findByName(dto.getName())
+                .orElseGet(() -> {
+                    Computer newComp = new Computer();
+                    newComp.setMacAddress(dto.getMacAddress());
+                    newComp.setStatus(ComputerStatus.AVAILABLE);
+                    return newComp;
+                });
 
-        Computer c = new Computer();
-        c.setName(dto.getName());
+        computer.setName(dto.getName());
+        computer.setIpAddress(dto.getIpAddress());
+        computer.setLastHeartbeat(LocalDateTime.now());
+
         if (dto.getOsType() != null) {
             try {
-                c.setOsType(OSType.valueOf(dto.getOsType()));
+                computer.setOsType(OSType.valueOf(dto.getOsType()));
             } catch (Exception ignored) {
             }
         }
-        c.setMacAddress(dto.getMacAddress());
-        c.setIpAddress(dto.getIpAddress());
-        c.setStatus(ComputerStatus.AVAILABLE);
-        if (dto.getBranchId() != null) {
 
-//            Branch b = branchRepository.findById(dto.getBranchId())
-            Branch b = branchRepository.findById(Long.valueOf(1))
-                    .orElseThrow(() -> new EntityNotFoundException(Branch.class, "id", dto.getBranchId().toString()));
-            c.setBranch(b);
+        if (computer.getBranch() == null) {
+            Branch b = branchRepository.findById(1L).orElseThrow();
+            computer.setBranch(b);
         }
-        c.setLastHeartbeat(LocalDateTime.now());
-        Computer saved = computerRepository.save(c);
-        return toDto(saved);
+
+        return toDto(computerRepository.save(computer));
     }
+
 
     public Page<ComputerDto> list(Long branchId, Pageable pageable) {
         Page<Computer> page = computerRepository.findByBranchId(branchId, pageable);
         return page.map(this::toDto);
+    }
+
+    public void handleHeartbeat(String mac) {
+        if (mac != null) {
+            computerRepository.findByName(mac).ifPresent(computer -> {
+                computer.setLastHeartbeat(java.time.LocalDateTime.now());
+                computer.setStatus(ComputerStatus.IN_USE);
+                computerRepository.save(computer);
+            });
+        }
     }
 
     public ComputerDto toDto(Computer c) {

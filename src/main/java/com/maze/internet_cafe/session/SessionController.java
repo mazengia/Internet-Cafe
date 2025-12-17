@@ -2,7 +2,6 @@ package com.maze.internet_cafe.session;
 
 import com.maze.internet_cafe.model.User;
 import com.maze.internet_cafe.model.UserRepository;
-import com.maze.internet_cafe.session.dto.SessionDto;
 import com.maze.internet_cafe.session.dto.SessionStartRequest;
 import com.maze.internet_cafe.session.dto.SessionStopRequest;
 import jakarta.validation.Valid;
@@ -17,10 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/sessions")
 public class SessionController {
 
     private final SessionService sessionService;
@@ -31,22 +31,17 @@ public class SessionController {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','AGENT','USER')")
-    @PostMapping("/computers/{computerId}/sessions/start")
-    public ResponseEntity<SessionDto> start(@PathVariable Long computerId, @Valid @RequestBody SessionStartRequest req) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = null;
-        if (auth != null && auth.getName() != null) {
-            Optional<User> u = userRepository.findByUsername(auth.getName());
-            if (u.isPresent()) user = u.get();
-        }
-        SessionDto dto = sessionService.start(computerId, req, user);
+    //    @PreAuthorize("hasAnyRole('ADMIN','AGENT','USER')")
+    @PostMapping("/{computerId}/start")
+    public ResponseEntity<Session> start(@PathVariable Long computerId, @Valid @RequestBody SessionStartRequest req) {
+
+        Session dto = sessionService.start(computerId, req);
         return ResponseEntity.status(201).body(dto);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','AGENT','USER')")
-    @PostMapping("/computers/{computerId}/sessions/{sessionId}/stop")
-    public ResponseEntity<SessionDto> stop(@PathVariable Long computerId, @PathVariable Long sessionId, @RequestBody(required = false) SessionStopRequest req) {
+    //    @PreAuthorize("hasAnyRole('ADMIN','AGENT','USER')")
+    @PostMapping("/{computerId}/{sessionId}/stop")
+    public ResponseEntity<Session> stop(@PathVariable Long computerId, @PathVariable Long sessionId, @RequestBody(required = false) SessionStopRequest req) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User actingUser = null;
         if (auth != null && auth.getName() != null) {
@@ -54,23 +49,29 @@ public class SessionController {
         }
         Collection<? extends GrantedAuthority> authorities = auth != null ? auth.getAuthorities() : null;
 
-        SessionDto dto = sessionService.stop(computerId, sessionId, req, actingUser, authorities);
+        Session dto = sessionService.stop(computerId, sessionId, req, actingUser, authorities);
         return ResponseEntity.ok(dto);
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/computers/{computerId}/sessions")
-    public ResponseEntity<Page<SessionDto>> listByComputer(@PathVariable Long computerId,
-                                                          @RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "20") int size) {
+    //    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{computerId}/sessions")
+    public ResponseEntity<Page<Session>> listByComputer(@PathVariable Long computerId,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<SessionDto> result = sessionService.listByComputer(computerId, pageable);
+        Page<Session> result = sessionService.listByComputer(computerId, pageable);
         return ResponseEntity.ok(result);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/sessions/{id}")
-    public ResponseEntity<SessionDto> get(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Session> get(@PathVariable Long id) {
         return ResponseEntity.ok(sessionService.get(id));
+    }
+    @PostMapping("/terminate")
+    public ResponseEntity<Void> terminate(@RequestBody Map<String, String> request) {
+        String name = request.get("mac");
+        sessionService.terminateByName(name);
+        return ResponseEntity.ok().build();
     }
 }

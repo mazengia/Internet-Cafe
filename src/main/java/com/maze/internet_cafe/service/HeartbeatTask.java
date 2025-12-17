@@ -17,7 +17,8 @@ public class HeartbeatTask {
         exec.scheduleAtFixedRate(() -> {
             WebClient.create(AgentService.SERVER)
                     .post()
-                    .uri("/api/agents/heartbeat")
+//                    .uri("/api/agents/heartbeat")
+                    .uri("/api/v1/computers/heartbeat")
                     .bodyValue(Map.of("mac", NetworkUtil.mac()))
                     .retrieve()
                     .bodyToMono(Void.class)

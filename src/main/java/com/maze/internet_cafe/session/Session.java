@@ -21,13 +21,8 @@ public class Session {
     private Long id;
 
     @ManyToOne
-    private Branch branch;
-
-    @ManyToOne
     private Computer computer;
 
-    @ManyToOne
-    private User user;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;

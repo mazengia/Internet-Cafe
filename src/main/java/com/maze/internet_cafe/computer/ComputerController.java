@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/computers")
 public class ComputerController {
@@ -20,14 +22,14 @@ public class ComputerController {
         this.computerService = computerService;
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN','AGENT')")
+    //    @PreAuthorize("hasAnyRole('ADMIN','AGENT')")
     @PostMapping
     public ResponseEntity<ComputerDto> create(@Valid @RequestBody ComputerCreateDto dto) {
         ComputerDto created = computerService.create(dto);
         return ResponseEntity.status(201).body(created);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    //    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<Page<ComputerDto>> list(
             @RequestParam(required = false) Long branchId,
@@ -39,10 +41,17 @@ public class ComputerController {
         return ResponseEntity.ok(result);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    //    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<ComputerDto> get(@PathVariable Long id) {
         Computer c = computerService.findById(id);
         return ResponseEntity.ok(computerService.toDto(c));
+    }
+
+    @PostMapping("/heartbeat")
+    public ResponseEntity<Void> handleHeartbeat(@RequestBody Map<String, String> data) {
+        String mac = data.get("mac");
+        computerService.handleHeartbeat(mac);
+        return ResponseEntity.ok().build();
     }
 }

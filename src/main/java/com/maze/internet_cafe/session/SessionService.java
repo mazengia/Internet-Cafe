@@ -3,10 +3,10 @@ package com.maze.internet_cafe.session;
 import com.maze.internet_cafe.branch.BranchRepository;
 import com.maze.internet_cafe.computer.Computer;
 import com.maze.internet_cafe.computer.ComputerRepository;
+import com.maze.internet_cafe.computer.ComputerStatus;
 import com.maze.internet_cafe.exception.EntityNotFoundException;
 import com.maze.internet_cafe.model.User;
 import com.maze.internet_cafe.service.BillingService;
-import com.maze.internet_cafe.session.dto.SessionDto;
 import com.maze.internet_cafe.session.dto.SessionStartRequest;
 import com.maze.internet_cafe.session.dto.SessionStopRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -27,12 +31,9 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final ComputerRepository computerRepository;
-    private final BranchRepository branchRepository;
     private final BillingService billingService;
-    private final ModelMapper mapper = new ModelMapper();
 
-
-    public SessionDto start(Long computerId, SessionStartRequest req, User user) {
+    public Session start(Long computerId, SessionStartRequest req) {
         Computer computer = computerRepository.findById(computerId)
                 .orElseThrow(() -> new EntityNotFoundException(Computer.class, "id", computerId.toString()));
 
@@ -42,7 +43,6 @@ public class SessionService {
 
         Session s = new Session();
         s.setComputer(computer);
-        s.setBranch(computer.getBranch());
         s.setStartTime(LocalDateTime.now());
         if (req.getPricePerHour() != null) {
             s.setPricePerHour(req.getPricePerHour());
@@ -52,14 +52,11 @@ public class SessionService {
             throw new IllegalStateException("No price configured for session and branch");
         }
         s.setStatus(SessionStatus.RUNNING);
-        s.setUser(user);
 
         computer.setStatus(com.maze.internet_cafe.computer.ComputerStatus.IN_USE);
         computerRepository.save(computer);
 
-        Session saved = sessionRepository.save(s);
-
-        return toDto(saved);
+        return sessionRepository.save(s);
     }
 
     /**
@@ -73,7 +70,7 @@ public class SessionService {
      * @param authorities authorities of the acting principal
      * @return updated SessionDto
      */
-    public SessionDto stop(Long computerId, Long sessionId, SessionStopRequest req, User actingUser, Collection<? extends GrantedAuthority> authorities) {
+    public Session stop(Long computerId, Long sessionId, SessionStopRequest req, User actingUser, Collection<? extends GrantedAuthority> authorities) {
         Session s = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new EntityNotFoundException(Session.class, "id", sessionId.toString()));
 
@@ -82,9 +79,8 @@ public class SessionService {
         }
 
         // Permission check: owner or admin/agent
-        boolean isOwner = actingUser != null && s.getUser() != null && actingUser.getId() != null && actingUser.getId().equals(s.getUser().getId());
         boolean hasAdminOrAgent = authorities != null && authorities.stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()) || "ROLE_AGENT".equals(a.getAuthority()));
-        if (!isOwner && !hasAdminOrAgent) {
+        if (!hasAdminOrAgent) {
             throw new SecurityException("Forbidden");
         }
 
@@ -98,28 +94,42 @@ public class SessionService {
         computer.setStatus(com.maze.internet_cafe.computer.ComputerStatus.AVAILABLE);
         computerRepository.save(computer);
 
-        Session saved = sessionRepository.save(s);
-        return toDto(saved);
+        return sessionRepository.save(s);
     }
 
-    public SessionDto toDto(Session s) {
-        SessionDto dto = mapper.map(s, SessionDto.class);
-        if (s.getComputer() != null) dto.setComputerId(s.getComputer().getId());
-        if (s.getBranch() != null) dto.setBranchId(s.getBranch().getId());
-        if (s.getUser() != null) {
-            dto.setUserId(s.getUser().getId());
-            dto.setUsername(s.getUser().getUsername());
-        }
-        return dto;
+
+    public Page<Session> listByComputer(Long computerId, Pageable pageable) {
+        return sessionRepository.findByComputerId(computerId, pageable);
     }
 
-    public Page<SessionDto> listByComputer(Long computerId, Pageable pageable) {
-        Page<Session> page = sessionRepository.findByComputerId(computerId, pageable);
-        return page.map(this::toDto);
-    }
-
-    public SessionDto get(Long id) {
-        return sessionRepository.findById(id).map(this::toDto)
+    public Session get(Long id) {
+        return sessionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Session.class, "id", id.toString()));
+    }
+
+
+    @Transactional
+    public void terminateByName(String name) {
+        Computer computer = computerRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException(Computer.class, "name", name));
+
+        sessionRepository.findByComputerIdAndStatus(computer.getId(), SessionStatus.RUNNING)
+                .ifPresent(session -> {
+                    session.setEndTime(LocalDateTime.now());
+                    session.setStatus(SessionStatus.FINISHED); // Critical for start() to work next time
+
+                    long minutes = ChronoUnit.MINUTES.between(session.getStartTime(), session.getEndTime());
+                    BigDecimal cost = session.getPricePerHour()
+                            .multiply(BigDecimal.valueOf(Math.max(minutes, 1)))
+                            .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+
+                    session.setTotalMinutes(minutes);
+                    session.setTotalCost(cost);
+
+                    computer.setStatus(ComputerStatus.AVAILABLE); // Ready for a new session
+
+                    sessionRepository.save(session);
+                    computerRepository.save(computer);
+                });
     }
 }
