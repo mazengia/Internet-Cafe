@@ -19,7 +19,7 @@ public class HeartbeatTask {
                     .post()
 //                    .uri("/api/agents/heartbeat")
                     .uri("/api/v1/computers/heartbeat")
-                    .bodyValue(Map.of("mac", NetworkUtil.mac()))
+                    .bodyValue(Map.of("name", NetworkUtil.machineName()))
                     .retrieve()
                     .bodyToMono(Void.class)
                     .subscribe();

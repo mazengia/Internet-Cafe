@@ -33,7 +33,7 @@ public class AgentService {
     @EventListener(ApplicationReadyEvent.class)
     public void onStart() {
         System.out.println(">>> Agent Application Started.");
-        LockService.lock();
+//        LockService.lock();
 
         ComputerDto computer = null;
         while (computer == null) {
@@ -101,7 +101,7 @@ public class AgentService {
             @Override
             public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
                 System.out.println(">>> WebSocket Online.");
-                session.subscribe("/topic/computer/" + NetworkUtil.mac(), new StompFrameHandler() {
+                session.subscribe("/topic/computer/" + NetworkUtil.machineName(), new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
                         return Map.class;

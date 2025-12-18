@@ -1,234 +1,197 @@
 <div class="container-fluid py-3">
-    <div class="row g-3">
-        <main class="col-12 col-lg-10">
-            <!-- Stats -->
-            <div class="row g-3 mb-3">
-                <div class="col-12 col-md-4">
-                    <div class="glass p-3 stat"><i class="bi bi-pc-display"></i><div><div class="metric" id="stat-total">—</div><small class="text-secondary">Total Computers</small></div></div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="glass p-3 stat"><i class="bi bi-play-circle"></i><div><div class="metric" id="stat-running">—</div><small class="text-secondary">Running Sessions</small></div></div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="glass p-3 stat"><i class="bi bi-cash-coin"></i><div><div class="metric" id="stat-revenue">—</div><small class="text-secondary">Live Revenue</small></div></div>
-                </div>
-            </div>
+  <div class="row g-3">
+    <main class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Computers</h4>
+      </div>
+      <!-- Stats -->
+      <div class="row g-3 mb-3">
+        <div class="col-12 col-md-4">
+          <div class="glass p-3 stat"><i class="bi bi-pc-display"></i><div><div class="metric" id="stat-total">—</div><small class="text-secondary">Total Computers</small></div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="glass p-3 stat"><i class="bi bi-play-circle"></i><div><div class="metric" id="stat-running">—</div><small class="text-secondary">Running Sessions</small></div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="glass p-3 stat"><i class="bi bi-cash-coin"></i><div><div class="metric" id="stat-revenue">—</div><small class="text-secondary">Live Revenue</small></div></div>
+        </div>
+      </div>
 
-            <div id="computers-grid" class="row g-3"></div>
+      <div id="computers-grid" class="row g-3"></div>
 
-            <!-- Table -->
-            <div class="glass p-3 mt-4" id="sessions">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="mb-0">Running sessions</h6>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle" id="sessions-table">
-                        <thead><tr><th>Computer</th><th>MAC</th><th>Elapsed</th><th>Price/hr</th><th>Total</th><th>Actions</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </div>
+      <!-- Table -->
+      <div class="glass p-3 mt-4" id="sessions">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0">Running sessions</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle" id="sessions-table">
+            <thead><tr><th>Computer</th><th>MAC</th><th>Elapsed</th><th>Price/hr</th><th>Total</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
 </div>
 
+<style>
+  .glass{ border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .stat i{ color:#7c3aed; font-size:1.4rem; }
+  .metric{ font-weight:700; }
+  .pill{ padding:.25rem .5rem; border-radius:999px; }
+  @media (max-width:768px) { .metric{ font-size:1rem } }
+
+  /* Table polish: sticky header, nicer buttons */
+  #sessions-table thead th{ position: sticky; top: 0; background: rgba(6,6,20,0.6); backdrop-filter: blur(4px); z-index: 2; }
+  #sessions-table tbody tr td{ vertical-align: middle; }
+  .btn-sm.btn-warning, .btn-sm.btn-danger { min-width: 78px; }
+  .btn-sm.btn-success { min-width: 78px; }
+  .badge-role{ display:inline-block; padding:6px 10px; border-radius:999px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); color:#eaf2ff; }
+
+  /* Card spacing */
+  #computers-grid > .col-12 { margin-bottom: 8px; }
+
+  /* mini CTA inside each card */
+  .computer .btn { font-weight:600; }
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    /* JS: fetch data, render cards/table, STOMP subscription, actions, stats, auth/logout */
+// Dashboard fragment: defines initDashboard()
+function initDashboard(){
+  const state = { computers: {}, sessions: {} };
+  const gridEl = document.getElementById('computers-grid');
+  const sessionsTbody = document.querySelector('#sessions-table tbody');
+  const statTotal = document.getElementById('stat-total');
+  const statRunning = document.getElementById('stat-running');
+  const statRevenue = document.getElementById('stat-revenue');
 
-    // auth helper: send Authorization header if token in localStorage, otherwise use cookie (same-origin)
-    function authOptions(extra) {
-        const token = localStorage.getItem('jwt_token');
-        const headers = {'Content-Type':'application/json'};
-        const opts = { headers };
-        if (token) headers['Authorization'] = 'Bearer ' + token; else opts.credentials = 'same-origin';
-        if (extra && extra.method) opts.method = extra.method;
-        if (extra && extra.body) opts.body = extra.body;
-        return opts;
-    }
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-    // state
-    const state = { computers: {}, sessions: {} };
+  function cardTemplate(c, elapsed, total){
+    const name = escapeHtml(c.name||('Computer '+(c.id||'')));
+    const mac = escapeHtml(c.macAddress||'');
+    const price = c.branchPrice || '-';
+    const statusBadge = (c.status==='IN_USE') ? `<span class="pill success">IN USE</span>` : `<span class="pill muted">AVAILABLE</span>`;
+    return `\
+      <div class="col-12 col-md-6 col-lg-4">\
+        <div class="glass p-3 computer h-100">\
+          <div class="d-flex justify-content-between align-items-start mb-2">\
+            <div>\
+              <div class="fw-semibold">${name}</div>\
+              <div class="small text-muted">${mac}</div>\
+            </div>\
+            <div>${statusBadge}</div>\
+          </div>\
+          <div class="d-flex justify-content-between align-items-center mb-3">\
+            <div><div class="small text-muted">Elapsed</div><div class="metric">${elapsed}</div></div>\
+            <div><div class="small text-muted">Price/hr</div><div>${price}</div></div>\
+            <div><div class="small text-muted">Total</div><div>${total}</div></div>\
+          </div>\
+          <div class="d-flex gap-2">\
+            <button class="btn btn-sm btn-success start-btn" data-id="${c.id}"><i class="bi bi-play-fill"></i> Start</button>\
+            <button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}"><i class="bi bi-stop-fill"></i> Stop</button>\
+            <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${name}"><i class="bi bi-x-lg"></i> Terminate</button>\
+          </div>\
+        </div>\
+      </div>`;
+  }
 
-    // elements
-    const gridEl = document.getElementById('computers-grid');
-    const sessionsTbody = document.querySelector('#sessions-table tbody');
-    const statTotal = document.getElementById('stat-total');
-    const statRunning = document.getElementById('stat-running');
-    const statRevenue = document.getElementById('stat-revenue');
-
-    // render functions
-    function renderGrid() {
-        gridEl.innerHTML = '';
-        const comps = Object.values(state.computers || {});
-        comps.forEach(c => {
-            const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
-            const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost || '-') : '-';
-            const cardHtml = cardTemplate(c, elapsed, total);
-            gridEl.insertAdjacentHTML('beforeend', cardHtml);
-        });
-        renderSessionsTable();
-        updateStats();
-    }
-
-    function renderSessionsTable(){
-        sessionsTbody.innerHTML = '';
-        Object.values(state.computers).forEach(c => {
-            if (c.status === 'IN_USE'){
-                const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
-                const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost || '-') : '-';
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${escapeHtml(c.name||'')}</td><td>${escapeHtml(c.macAddress||'')}</td><td>${elapsed}</td><td>${c.branchPrice||'-'}</td><td>${total}</td><td><button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button> <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${escapeHtml(c.name||'')}">Terminate</button></td>`;
-                sessionsTbody.appendChild(tr);
-            }
-        });
-    }
-
-    function updateStats(){
-        const comps = Object.values(state.computers || {});
-        const total = comps.length;
-        const running = comps.filter(c => c.status === 'IN_USE').length;
-        let revenue = 0;
-        Object.keys(state.sessions).forEach(id => {
-            const s = state.sessions[id];
-            if (s && s.totalCost) {
-                const v = parseFloat(s.totalCost);
-                if (!isNaN(v)) revenue += v;
-            }
-        });
-        statTotal.innerText = total;
-        statRunning.innerText = running;
-        statRevenue.innerText = revenue ? revenue.toFixed(2) : '-';
-    }
-
-    function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-    // card template: returns HTML for a computer card
-    function cardTemplate(c, elapsed, total){
-        const name = escapeHtml(c.name || ('Computer ' + (c.id||'')));
-        const mac = escapeHtml(c.macAddress || '');
-        const price = c.branchPrice || '-';
-        const statusBadge = (c.status === 'IN_USE') ? `<span class="pill success">IN USE</span>` : `<span class="pill muted">AVAILABLE</span>`;
-        return `
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="glass p-3 computer h-100">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div>
-                        <div class="fw-semibold">${name}</div>
-                        <div class="small text-muted">${mac}</div>
-                    </div>
-                    <div>${statusBadge}</div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <div class="small text-muted">Elapsed</div>
-                        <div class="metric">${elapsed}</div>
-                    </div>
-                    <div>
-                        <div class="small text-muted">Price/hr</div>
-                        <div>${price}</div>
-                    </div>
-                    <div>
-                        <div class="small text-muted">Total</div>
-                        <div>${total}</div>
-                    </div>
-                </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-success start-btn" data-id="${c.id}"><i class="bi bi-play-fill"></i> Start</button>
-                    <button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}"><i class="bi bi-stop-fill"></i> Stop</button>
-                    <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${name}"><i class="bi bi-x-lg"></i> Terminate</button>
-                </div>
-            </div>
-        </div>`;
-    }
-
-    async function fetchComputers(){
-        try{
-            const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions());
-            if (!res.ok) throw new Error('Failed to load computers');
-            const page = await res.json();
-            (page.content || []).forEach(c => {
-                // ensure required fields
-                state.computers[c.id] = Object.assign({}, c, { branchPrice: (c.branch && c.branch.pricePerHour ? c.branch.pricePerHour : (c.branchPrice || '-')), status: c.status || 'AVAILABLE' });
-            });
-            renderGrid();
-        }catch(err){
-            console.error('fetchComputers', err);
-        }
-    }
-
-    // STOMP websocket subscription
-    const host = window.location.hostname;
-    const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const wsUrl = `${wsProtocol}://${host}:${port}/ws`;
-
-    const stompClient = new StompJs.Client({
-        brokerURL: wsUrl,
-        onConnect: () => {
-            console.log('STOMP connected');
-            stompClient.subscribe('/topic/sessions', msg => {
-                try{
-                    const payload = JSON.parse(msg.body);
-                    if (payload && payload.id) {
-                        state.sessions[payload.id] = { elapsed: payload.elapsed, totalCost: payload.totalCost };
-                        if (state.computers[payload.id]) state.computers[payload.id].status = 'IN_USE';
-                    } else if (payload && payload.macAddress) {
-                        const comp = Object.values(state.computers).find(c => c.macAddress === payload.macAddress);
-                        if (comp) {
-                            state.sessions[comp.id] = { elapsed: payload.elapsed, totalCost: payload.totalCost };
-                            comp.status = 'IN_USE';
-                        }
-                    }
-                    renderGrid();
-                }catch(e){ console.error('stomp msg', e); }
-            });
-        },
-        onStompError: (frame) => { console.error('STOMP error', frame); },
-        debug: () => {}
+  function renderGrid(){
+    gridEl.innerHTML = '';
+    Object.values(state.computers).forEach(c=>{
+      const elapsed = state.sessions[c.id]?.elapsed || '-';
+      const total = state.sessions[c.id]?.totalCost || '-';
+      gridEl.insertAdjacentHTML('beforeend', cardTemplate(c, elapsed, total));
     });
-    stompClient.activate();
+    renderSessionsTable();
+    updateStats();
+  }
 
-    document.addEventListener('click', async (e) => {
-        const t = e.target;
-        if (t.matches('.start-btn')){
-            const id = t.dataset.id;
-            const price = prompt('Price per hour (optional)');
-            const body = price ? JSON.stringify({ pricePerHour: parseFloat(price) }) : JSON.stringify({});
-            try{
-                const r = await fetch(`/sessions/${id}/start`, authOptions({ method: 'POST', body }));
-                if (!r.ok) { const txt = await r.text(); alert('Start failed: '+txt); return; }
-                const dto = await r.json();
-                state.computers[id].status = 'IN_USE';
-                if (dto && dto.totalCost) state.sessions[id] = { elapsed: 0, totalCost: dto.totalCost };
-                renderGrid();
-            }catch(err){ console.error(err); alert('Start error'); }
-        }
-        if (t.matches('.stop-btn')){
-            const id = t.dataset.id;
-            try{
-                const r = await fetch(`/sessions/${id}/stop-running`, authOptions({ method: 'POST' }));
-                if (!r.ok) { const txt = await r.text(); alert('Stop failed: '+txt); return; }
-                const dto = await r.json();
-                state.computers[id].status = 'AVAILABLE';
-                state.sessions[id] = { elapsed: 0, totalCost: dto.totalCost || '-' };
-                renderGrid();
-            }catch(err){ console.error(err); alert('Stop error'); }
-        }
-        if (t.matches('.terminate-btn')){
-            const id = t.dataset.id;
-            const name = t.dataset.name || '';
-            if (!confirm('Terminate running session on '+name+'?')) return;
-            try{
-                const r = await fetch(`/sessions/${id}/terminate-now`, authOptions({ method: 'POST' }));
-                if (!r.ok) { const txt = await r.text(); alert('Terminate failed: '+txt); return; }
-                alert('Terminated');
-                state.computers[id].status = 'AVAILABLE';
-                delete state.sessions[id];
-                renderGrid();
-            }catch(err){ console.error(err); alert('Terminate error'); }
-        }
+  function renderSessionsTable(){
+    sessionsTbody.innerHTML = '';
+    Object.values(state.computers).forEach(c=>{
+      if (c.status === 'IN_USE'){
+        const elapsed = state.sessions[c.id]?.elapsed || '-';
+        const total = state.sessions[c.id]?.totalCost || '-';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${escapeHtml(c.name||'')}</td><td>${escapeHtml(c.macAddress||'')}</td><td>${elapsed}</td><td>${c.branchPrice||'-'}</td><td>${total}</td><td><button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button> <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${escapeHtml(c.name||'')}">Terminate</button></td>`;
+        sessionsTbody.appendChild(tr);
+      }
     });
-     fetchComputers();
+  }
+
+  function updateStats(){
+    const comps = Object.values(state.computers||{});
+    const total = comps.length;
+    const running = comps.filter(c=>c.status==='IN_USE').length;
+    let revenue = 0;
+    Object.values(state.sessions).forEach(s=>{ const v=parseFloat(s.totalCost); if(!isNaN(v)) revenue+=v; });
+    statTotal.innerText = total;
+    statRunning.innerText = running;
+    statRevenue.innerText = revenue?revenue.toFixed(2):'-';
+  }
+
+  function authOptions(extra){
+    const token = localStorage.getItem('jwt_token'); const headers={'Content-Type':'application/json'}; const opts={headers};
+    if (token) headers['Authorization']='Bearer '+token; else opts.credentials='same-origin';
+    if (extra?.method) opts.method=extra.method; if (extra?.body) opts.body=extra.body; return opts;
+  }
+
+  async function fetchComputers(){
+    try{
+      const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions());
+      if (!res.ok) throw new Error('Failed to load computers');
+      const data = await res.json();
+      const comps = Array.isArray(data)?data:(data.content||[]);
+      comps.forEach(c=> state.computers[c.id] = {...c, branchPrice: c.branch?.pricePerHour || c.branchPrice || '-', status: c.status || 'AVAILABLE'});
+      renderGrid();
+    }catch(e){ console.error('fetchComputers', e); }
+  }
+
+  // STOMP real-time
+  let stompClient;
+  function startStomp(){
+    try{
+      const host = window.location.hostname; const port = window.location.port || (window.location.protocol==='https:'?'443':'80'); const wsProtocol = window.location.protocol==='https:'?'wss':'ws'; const wsUrl = `${wsProtocol}://${host}:${port}/ws`;
+      stompClient = new StompJs.Client({ brokerURL: wsUrl, onConnect: ()=>{
+        stompClient.subscribe('/topic/sessions', msg=>{ try{ const p=JSON.parse(msg.body); if(p.id){ state.sessions[p.id] = {elapsed: p.elapsed, totalCost: p.totalCost}; if(state.computers[p.id]) state.computers[p.id].status='IN_USE'; } else if(p.macAddress){ const comp = Object.values(state.computers).find(x=>x.macAddress===p.macAddress); if(comp){ state.sessions[comp.id] = {elapsed: p.elapsed, totalCost: p.totalCost}; comp.status='IN_USE'; }} renderGrid(); }catch(ex){console.error('stomp msg',ex);} });
+      }, onStompError: err=>console.error('STOMP error', err), debug: ()=>{} });
+      stompClient.activate();
+    }catch(e){ console.warn('stomp init failed', e); }
+  }
+
+  // delegated actions
+  document.addEventListener('click', async (ev)=>{
+    const t = ev.target.closest('button'); if(!t) return; if(t.matches('.start-btn')){
+      const id = t.dataset.id; const price = prompt('Price per hour (optional)'); const body = price?JSON.stringify({pricePerHour:parseFloat(price)}):JSON.stringify({});
+      try{ const r=await fetch(`/sessions/${id}/start`, authOptions({method:'POST', body})); if(!r.ok){ alert('Start failed'); return;} const dto=await r.json(); state.computers[id].status='IN_USE'; if(dto?.totalCost) state.sessions[id]={elapsed:0,totalCost:dto.totalCost}; renderGrid(); }catch(e){console.error(e); alert('Start error'); }
+    }
+    if(t.matches('.stop-btn')){
+      const id=t.dataset.id; try{ const r=await fetch(`/sessions/${id}/stop-running`, authOptions({method:'POST'})); if(!r.ok){ alert('Stop failed'); return;} const dto=await r.json(); state.computers[id].status='AVAILABLE'; state.sessions[id]={elapsed:0,totalCost:dto.totalCost||'-'}; renderGrid(); }catch(e){console.error(e); alert('Stop error'); }
+    }
+    if(t.matches('.terminate-btn')){
+      const id=t.dataset.id; const name=t.dataset.name||''; if(!confirm('Terminate running session on '+name+'?')) return; try{ const r=await fetch(`/sessions/${id}/terminate-now`, authOptions({method:'POST'})); if(!r.ok){ alert('Terminate failed'); return;} alert('Terminated'); state.computers[id].status='AVAILABLE'; delete state.sessions[id]; renderGrid(); }catch(e){console.error(e); alert('Terminate error'); }
+    }
+  });
+
+  // user area + logout
+  async function updateUserArea(){
+    const ua = document.getElementById('user-area'); if(!ua) return;
+    const token = localStorage.getItem('jwt_token');
+    try{
+      const res = await fetch('/api/auth/me', token?{headers:{'Authorization':'Bearer '+token}}:{credentials:'same-origin'});
+      if(!res.ok){ ua.innerHTML=`<a href="/login" class="btn btn-sm btn-outline-light">Login</a>`; return; }
+      const j = await res.json(); ua.innerHTML = `<strong>${j.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-light ms-2">Logout</button>`;
+      document.getElementById('logout').addEventListener('click', async ()=>{ try{ await fetch('/api/auth/logout',{method:'POST', credentials:'same-origin'}); }catch(e){} localStorage.removeItem('jwt_token'); window.location.href='/login'; });
+    }catch(e){ ua.innerHTML=`<a href="/login" class="btn btn-sm btn-outline-light">Login</a>`; }
+  }
+
+  // init
+  updateUserArea(); fetchComputers(); startStomp();
+}
+
+// when fragment loaded inline, run initDashboard if available
+try{ if (typeof initDashboard === 'function') initDashboard(); }catch(e){}
 </script>
