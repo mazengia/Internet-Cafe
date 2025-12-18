@@ -42,6 +42,7 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .exceptionHandling(eh -> eh.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .authorizeHttpRequests(auth -> auth
                         // Require ADMIN to view dashboard and admin UI
                         .requestMatchers("/dashboard", "/").hasRole("ADMIN")

@@ -1,271 +1,155 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <title>Internet Cafe Dashboard</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard • Internet Cafe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/icon.v1.png" />
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #f4f4f4; }
-        .running { background: #eaffea; }
-        .stopped { background: #ffdfe0; }
-        .controls button { margin-right: 6px; }
-        .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+      body { background: linear-gradient(180deg,#f4f7fb,#ffffff); min-height:100vh; }
+      .topbar { padding:18px 0; }
+      .logo { width:44px; height:44px; object-fit:contain; border-radius:8px; }
+      .card-computer { border-radius:10px; box-shadow: 0 6px 20px rgba(20,40,80,0.06); }
+      .elapsed { font-weight:600; }
+      @media (min-width: 992px) {
+        .grid-col { flex: 0 0 33.3333%; max-width:33.3333%; }
+      }
     </style>
-</head>
-<body>
-<div class="topbar">
-    <h1>Internet Cafe Dashboard</h1>
-    <div id="user-area">
-        <a href="/login">Login</a> |
-        <a href="/users">Users</a>
-    </div>
-</div>
-<p>Live computer sessions (updates in real-time)</p>
-<table id="computers">
-    <thead>
-    <tr>
-        <th>Computer</th>
-        <th>MAC</th>
-        <th>Status</th>
-        <th>Elapsed (s)</th>
-        <th>Price/hr</th>
-        <th>Total Cost</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+  </head>
+  <body>
+    <header class="container topbar">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <img src="/images/icon.v1.png" alt="logo" class="logo" />
+          <div>
+            <h4 class="mb-0">Internet Cafe</h4>
+            <small class="text-muted">Real-time sessions and controls</small>
+          </div>
+        </div>
+        <div id="user-area">
+          <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+          <a href="/users" class="btn btn-outline-secondary">Users</a>
+        </div>
+      </div>
+    </header>
 
-<!-- use stomp.js that supports raw WebSocket connections -->
-<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-<script>
-    const host = window.location.hostname;
-    const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const wsUrl = `${wsProtocol}://${host}:${port}/ws`;
+    <main class="container py-3">
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">Computers</h5>
+            <div>
+              <button id="refresh" class="btn btn-sm btn-outline-secondary">Refresh</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    // Table and state
-    const tbody = document.querySelector('#computers tbody');
-    const state = { computers: {}, sessions: {} };
+      <div id="computers-grid" class="row g-3">
+        <!-- cards inserted here -->
+      </div>
 
-    function renderComputers() {
-        tbody.innerHTML = '';
-        Object.values(state.computers).forEach(c => {
-            const tr = document.createElement('tr');
-            tr.id = 'comp-' + c.id;
-            tr.className = c.status === 'IN_USE' ? 'running' : 'stopped';
+      <div class="mt-4">
+        <h6>Running sessions (detailed)</h6>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle" id="sessions-table">
+            <thead class="table-light"><tr><th>Computer</th><th>MAC</th><th>Elapsed(s)</th><th>Price/hr</th><th>Total</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
 
-            const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
-            const totalCost = state.sessions[c.id] ? state.sessions[c.id].totalCost || '-' : '-';
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-            tr.innerHTML = `
-                <td>${escapeHtml(c.name || '')}</td>
-                <td>${escapeHtml(c.macAddress || '')}</td>
-                <td>${escapeHtml(c.status || '')}</td>
-                <td class="elapsed">${elapsed}</td>
-                <td class="price">${c.branchPrice || '-'}</td>
-                <td class="totalCost">${totalCost}</td>
-                <td class="controls">
-                    <button class="start" data-id="${c.id}">Start</button>
-                    <button class="stop" data-id="${c.id}">Stop</button>
-                    <button class="terminate" data-id="${c.id}" data-name="${escapeHtml(c.name || '')}">Terminate</button>
-                    <button class="lock" data-mac="${escapeHtml(c.macAddress || '')}">Lock</button>
-                    <button class="unlock" data-mac="${escapeHtml(c.macAddress || '')}">Unlock</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
+    <script>
+      // Reuse authOptions from previous templates (simple helper)
+      function authOptions(extra) { const token = localStorage.getItem('jwt_token'); const headers = {'Content-Type':'application/json'}; let opts={headers}; if(token) headers['Authorization']='Bearer '+token; else opts.credentials='same-origin'; if(extra&&extra.method) opts.method=extra.method; if(extra&&extra.body) opts.body=extra.body; return opts; }
+
+      const state={computers:{}, sessions:{}};
+      const grid = document.getElementById('computers-grid');
+      const sessionsTbody = document.querySelector('#sessions-table tbody');
+
+      function renderGrid(){
+        grid.innerHTML='';
+        Object.values(state.computers).forEach(c=>{
+          const col = document.createElement('div'); col.className='col-12 col-md-6 col-lg-4';
+          const statusBadge = c.status==='IN_USE' ? '<span class="badge bg-success">In use</span>' : '<span class="badge bg-secondary">Available</span>';
+          const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
+          const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost||'-') : '-';
+          col.innerHTML = `
+            <div class="card card-computer p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h6 class="mb-1">${escape(c.name||'')}</h6>
+                  <div class="text-muted small">${escape(c.macAddress||'')}</div>
+                </div>
+                <div>${statusBadge}</div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <div class="small text-muted">Elapsed</div>
+                  <div class="elapsed">${elapsed}</div>
+                </div>
+                <div>
+                  <div class="small text-muted">Price/hr</div>
+                  <div>${c.branchPrice||'-'}</div>
+                </div>
+                <div>
+                  <div class="small text-muted">Total</div>
+                  <div>${total}</div>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-success start-btn" data-id="${c.id}">Start</button>
+                <button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button>
+                <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${escape(c.name||'')}">Terminate</button>
+              </div>
+            </div>`;
+          grid.appendChild(col);
         });
-    }
+        renderSessionsTable();
+      }
 
-    function escapeHtml(s){
-        return String(s || '').replace(/[&<>"'`]/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;', '`':'&#96;'}[m]));
-    }
+      function renderSessionsTable(){
+        sessionsTbody.innerHTML='';
+        Object.values(state.computers).forEach(c=>{
+          if(c.status==='IN_USE'){
+            const tr = document.createElement('tr');
+            const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
+            const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost||'-') : '-';
+            tr.innerHTML = `<td>${escape(c.name||'')}</td><td>${escape(c.macAddress||'')}</td><td>${elapsed}</td><td>${c.branchPrice||'-'}</td><td>${total}</td><td><button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button> <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${escape(c.name||'')}">Terminate</button></td>`;
+            sessionsTbody.appendChild(tr);
+          }
+        });
+      }
 
-    function authOptions(extra) {
-        const token = localStorage.getItem('jwt_token');
-        const headers = {'Content-Type':'application/json'};
-        let opts = { headers };
-        if(token) {
-            headers['Authorization'] = 'Bearer ' + token;
-        } else {
-            // use cookie-based auth for server-rendered login
-            opts.credentials = 'same-origin';
-        }
-        if(extra && extra.method) opts.method = extra.method;
-        if(extra && extra.body) opts.body = extra.body;
-        return opts;
-    }
+      function escape(s){ return String(s||'').replace(/[&<>"']/g, function(m){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]) }); }
 
-    // Fetch computers via API
-    async function fetchComputers(){
-        try{
-            const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions());
-            if(!res.ok) throw new Error('Failed to fetch computers: ' + res.status);
-            const page = await res.json();
-            (page.content || []).forEach(c => {
-                state.computers[c.id] = {...c, branchPrice: (c.branch && c.branch.pricePerHour ? c.branch.pricePerHour : '-')};
-            });
-            renderComputers();
-        }catch(err){
-            console.error(err);
-            tbody.innerHTML = '<tr><td colspan="7">Unable to load computers: '+escapeHtml(err.message)+'</td></tr>';
-        }
-    }
+      async function fetchComputers(){ try{ const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions()); if(!res.ok) return; const page = await res.json(); (page.content||[]).forEach(c=> state.computers[c.id] = {...c, branchPrice: (c.branch && c.branch.pricePerHour ? c.branch.pricePerHour : '-')}); renderGrid(); }catch(e){ console.error(e); } }
 
-    // Setup WebSocket + STOMP (raw websocket, no SockJS / /ws/info)
-    const stompClient = new StompJs.Client({
-        brokerURL: wsUrl,
-        onConnect: () => {
-            console.log('STOMP connected');
-            stompClient.subscribe('/topic/sessions', msg => {
-                try{
-                    const payload = JSON.parse(msg.body);
-                    if(payload.id) {
-                        state.sessions[payload.id] = {elapsed: payload.elapsed, totalCost: payload.totalCost};
-                        const row = document.getElementById('comp-' + payload.id);
-                        if(row){
-                            row.querySelector('.elapsed').innerText = payload.elapsed;
-                            if(payload.totalCost !== undefined && row.querySelector('.totalCost')) row.querySelector('.totalCost').innerText = payload.totalCost;
-                            row.classList.add('running');
-                            row.querySelector('td:nth-child(3)').innerText = 'IN_USE';
-                        }
-                    } else if(payload.macAddress) {
-                        const row = Array.from(document.querySelectorAll('#computers tbody tr')).find(r => r.querySelector('td:nth-child(2)') && r.querySelector('td:nth-child(2)').innerText === payload.macAddress);
-                        if(row){
-                            row.querySelector('.elapsed').innerText = payload.elapsed;
-                            row.classList.add('running');
-                            row.querySelector('td:nth-child(3)').innerText = 'IN_USE';
-                        }
-                    }
-                }catch(e){console.error('invalid session payload', e, msg.body)}
-            });
-        },
-        onStompError: frame => { console.error('STOMP error', frame); },
-        debug: (str) => { /* disable noisy logs or comment out */ }
-    });
+      // websocket + stomp
+      const host = window.location.hostname; const port = window.location.port || (window.location.protocol==='https:'?'443':'80'); const wsProtocol = window.location.protocol==='https:' ? 'wss' : 'ws'; const wsUrl = `${wsProtocol}://${host}:${port}/ws`;
+      const stompClient = new StompJs.Client({ brokerURL: wsUrl, onConnect: ()=>{ stompClient.subscribe('/topic/sessions', msg=>{ try{ const p = JSON.parse(msg.body); if(p.id){ state.sessions[p.id]= {elapsed:p.elapsed, totalCost:p.totalCost}; if(state.computers[p.id]) state.computers[p.id].status='IN_USE'; } else if(p.macAddress){ const comp = Object.values(state.computers).find(x=>x.macAddress===p.macAddress); if(comp) { state.sessions[comp.id] = {elapsed:p.elapsed, totalCost:p.totalCost}; comp.status='IN_USE'; } } renderGrid(); }catch(e){console.error(e);} }); }, onStompError: e=>console.error(e), debug:()=>{} });
+      stompClient.activate();
 
-    stompClient.activate();
+      // actions (delegated)
+      document.addEventListener('click', async (ev)=>{
+        const t = ev.target;
+        if(t.matches('.start-btn')){ const id=t.dataset.id; const price = prompt('Price per hour (optional)'); const body = price? JSON.stringify({pricePerHour:parseFloat(price)}):JSON.stringify({}); const r = await fetch(`/sessions/${id}/start`, authOptions({method:'POST', body})); if(r.ok){ const j=await r.json(); state.computers[id].status='IN_USE'; renderGrid(); } else { alert('Failed to start'); } }
+        if(t.matches('.stop-btn')){ const id=t.dataset.id; const r = await fetch(`/sessions/${id}/stop-running`, authOptions({method:'POST'})); if(r.ok){ const j=await r.json(); state.computers[id].status='AVAILABLE'; renderGrid(); } else alert('Failed to stop'); }
+        if(t.matches('.terminate-btn')){ const id=t.dataset.id; const name=t.dataset.name; if(!confirm('Terminate session on '+name+'?')) return; const r = await fetch(`/sessions/${id}/terminate-now`, authOptions({method:'POST'})); if(r.ok){ alert('Terminated'); fetchComputers(); } else alert('Terminate failed'); }
+      });
 
-    // Actions
-    document.addEventListener('click', async (e) => {
-        try{
-            if(e.target.matches('.start')){
-                const id = e.target.getAttribute('data-id');
-                const price = prompt('Price per hour (leave empty to use branch price):');
-                let body = {};
-                if(price) body.pricePerHour = parseFloat(price);
-                const res = await fetch(`/sessions/${id}/start`, authOptions({method: 'POST', body: JSON.stringify(body)}));
-                if(!res.ok) {
-                    const txt = await res.text();
-                    throw new Error('start failed: '+res.status+' '+txt);
-                }
-                const dto = await res.json();
-                if(dto && dto.computer && dto.computer.id){
-                    state.sessions[dto.computer.id] = {elapsed: 0, totalCost: dto.totalCost || '-'};
-                    state.computers[dto.computer.id].status = 'IN_USE';
-                    renderComputers();
-                } else {
-                    await fetchComputers();
-                }
-            }
+      document.getElementById('refresh').addEventListener('click', fetchComputers);
 
-            if(e.target.matches('.stop')){
-                const id = e.target.getAttribute('data-id');
-                const stopRes = await fetch(`/sessions/${id}/stop-running`, authOptions({method: 'POST'}));
-                if(!stopRes.ok){
-                    const txt = await stopRes.text();
-                    throw new Error('Stop failed: '+stopRes.status+' '+txt);
-                }
-                const stopped = await stopRes.json();
-                state.sessions[id] = {elapsed: 0, totalCost: stopped.totalCost || '-'};
-                state.computers[id].status = 'AVAILABLE';
-                renderComputers();
-            }
+      // user area update & logout redirect handled similarly to previous templates
+      async function updateUserArea(){ const token = localStorage.getItem('jwt_token'); const userArea = document.getElementById('user-area'); if(!token){ try{ const res = await fetch('/api/auth/me', {credentials:'same-origin'}); if(!res.ok) throw new Error('unauth'); const json = await res.json(); userArea.innerHTML = `Signed in as <strong>${json.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-primary ms-2">Logout</button>`; document.getElementById('logout').addEventListener('click', async ()=>{ try{ await fetch('/api/auth/logout',{method:'POST', credentials:'same-origin'}); }catch(e){} document.cookie='JWT=; Path=/; Max-Age=0'; localStorage.removeItem('jwt_token'); window.location.href='/login'; }); }catch(e){ userArea.innerHTML = `<a href="/login" class="btn btn-outline-primary">Login</a>`; } return; } try{ const res = await fetch('/api/auth/me',{headers:{'Authorization':'Bearer '+token}}); if(!res.ok) throw new Error('unauth'); const json=await res.json(); userArea.innerHTML = `Signed in as <strong>${json.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-primary ms-2">Logout</button>`; document.getElementById('logout').addEventListener('click', async ()=>{ try{ await fetch('/api/auth/logout',{method:'POST', credentials:'same-origin'}); }catch(e){} localStorage.removeItem('jwt_token'); window.location.href='/login'; }); }catch(e){ localStorage.removeItem('jwt_token'); userArea.innerHTML = `<a href="/login" class="btn btn-outline-primary">Login</a>`; } }
 
-            if(e.target.matches('.terminate')){
-                const id = e.target.getAttribute('data-id');
-                const name = e.target.getAttribute('data-name');
-                if(!confirm('Terminate running session on '+name+'?')) return;
-                const res = await fetch(`/sessions/${id}/terminate-now`, authOptions({method: 'POST'}));
-                if(!res.ok){
-                    const txt = await res.text();
-                    throw new Error('Terminate failed: '+res.status+' '+txt);
-                }
-                alert('Terminated');
-                await fetchComputers();
-            }
-
-            if(e.target.matches('.lock') || e.target.matches('.unlock')){
-                const mac = e.target.getAttribute('data-mac');
-                const action = e.target.matches('.lock') ? 'LOCK' : 'UNLOCK';
-                const res = await fetch(`/api/v1/admin/computers/${encodeURIComponent(mac)}/command?action=${action}`, authOptions({method: 'POST'}));
-                if(!res.ok){
-                    const txt = await res.text();
-                    throw new Error('Command failed: '+res.status+' '+txt);
-                }
-                const text = await res.text();
-                alert(text);
-            }
-        }catch(err){
-            console.error('Action error', err);
-            alert('Error: '+err.message);
-        }
-    });
-
-    async function updateUserArea(){
-        const token = localStorage.getItem('jwt_token');
-        const userArea = document.getElementById('user-area');
-        if(!token){
-            // try cookie-based me() call
-            try{
-                const res = await fetch('/api/auth/me', {credentials: 'same-origin'});
-                if(!res.ok) throw new Error('unauth');
-                const json = await res.json();
-                userArea.innerHTML = 'Signed in as <strong>' + (json.username || '') + '</strong> <button id="logout">Logout</button> | <a href="/users">Users</a>';
-                document.getElementById('logout').addEventListener('click', async () => {
-                    try {
-                        await fetch('/api/auth/logout', {method: 'POST', credentials: 'same-origin'});
-                    } catch(e) { /* ignore */ }
-                    document.cookie = 'JWT=; Path=/; Max-Age=0';
-                    localStorage.removeItem('jwt_token');
-                    updateUserArea();
-                });
-                return;
-            }catch(e){
-                userArea.innerHTML = '<a href="/login">Login</a> | <a href="/users">Users</a>';
-                return;
-            }
-        }
-        try{
-            const res = await fetch('/api/auth/me', {headers: {'Authorization':'Bearer '+token}});
-            if(!res.ok) throw new Error('unauth');
-            const json = await res.json();
-            userArea.innerHTML = 'Signed in as <strong>' + (json.username || '') + '</strong> <button id="logout">Logout</button> | <a href="/users">Users</a>';
-            document.getElementById('logout').addEventListener('click', async () => {
-                // call server logout to clear cookie if present, then clear local token
-                try {
-                    await fetch('/api/auth/logout', {method: 'POST', credentials: 'same-origin'});
-                } catch(e) { /* ignore */ }
-                localStorage.removeItem('jwt_token');
-                updateUserArea();
-            });
-        }catch(e){
-            localStorage.removeItem('jwt_token');
-            userArea.innerHTML = '<a href="/login">Login</a> | <a href="/users">Users</a>';
-        }
-    }
-
-    // call at startup
-    updateUserArea();
-
-    // Initial load
-    fetchComputers();
-
-    // Optional: poll every 10s to refresh computers list (in case new machines added)
-    setInterval(fetchComputers, 10000);
-</script>
-</body>
+      updateUserArea(); fetchComputers();
+    </script>
+  </body>
 </html>
 
