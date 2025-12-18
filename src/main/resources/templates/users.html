@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Users - Internet Cafe</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        input { padding:6px; }
+        .form-row { margin-bottom:8px; }
+    </style>
+</head>
+<body>
+<h1>Users</h1>
+<div>
+    <div class="form-row">
+        <input id="new-username" placeholder="username" />
+        <input id="new-name" placeholder="name" />
+        <input id="new-password" placeholder="password" type="password" />
+        <input id="new-roles" placeholder="roles (comma separated, e.g. ROLE_USER,ROLE_AGENT)" />
+        <button id="create-user">Create</button>
+    </div>
+</div>
+<table id="users-table">
+    <thead>
+    <tr><th>ID</th><th>Username</th><th>Name</th><th>Roles</th><th>Action</th></tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<p><a href="/dashboard">Back to dashboard</a></p>
+
+<script>
+    function authHeaders() {
+        const token = localStorage.getItem('jwt_token');
+        const h = {'Content-Type':'application/json'};
+        if(token) h['Authorization'] = 'Bearer ' + token;
+        return h;
+    }
+
+    function authOptions(extra) {
+        const token = localStorage.getItem('jwt_token');
+        const headers = {'Content-Type':'application/json'};
+        let opts = { headers };
+        if(token) headers['Authorization'] = 'Bearer ' + token; else opts.credentials = 'same-origin';
+        if(extra && extra.method) opts.method = extra.method;
+        if(extra && extra.body) opts.body = extra.body;
+        return opts;
+    }
+
+    async function loadUsers(){
+        const res = await fetch('/api/v1/admin/users', authOptions());
+        if(!res.ok){
+            document.querySelector('#users-table tbody').innerHTML = '<tr><td colspan="5">Unable to load users (are you admin?)</td></tr>';
+            return;
+        }
+        const list = await res.json();
+        const tbody = document.querySelector('#users-table tbody');
+        tbody.innerHTML = '';
+        list.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${u.id}</td><td>${u.username}</td><td>${u.name || ''}</td><td>${(u.authorities || []).map(a => a.name).join(',')}</td><td><button data-id="${u.id}" class="edit">Edit</button> <button data-id="${u.id}" class="del">Delete</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById('create-user').addEventListener('click', async () => {
+        const username = document.getElementById('new-username').value;
+        const name = document.getElementById('new-name').value;
+        const password = document.getElementById('new-password').value;
+        const roles = (document.getElementById('new-roles').value || '').split(',').map(s=>s.trim()).filter(s=>s.length>0);
+        try{
+            const res = await fetch('/api/v1/admin/users', {method:'POST', headers: authHeaders(), body: JSON.stringify({username, name, password, roles})});
+            if(!res.ok){
+                alert('Failed to create user: ' + await res.text());
+                return;
+            }
+            await loadUsers();
+        }catch(e){ alert('Error: '+e.message); }
+    });
+
+    document.querySelector('#users-table').addEventListener('click', async (e) => {
+        if(e.target.matches('.del')){
+            const id = e.target.getAttribute('data-id');
+            if(!confirm('Delete user '+id+'?')) return;
+            const res = await fetch('/api/v1/admin/users/'+id, {method:'DELETE', headers: authHeaders()});
+            if(!res.ok){ alert('Delete failed'); return; }
+            await loadUsers();
+        }
+        if(e.target.matches('.edit')){
+            const id = e.target.getAttribute('data-id');
+            const name = prompt('New name (leave empty to keep):');
+            const password = prompt('New password (leave empty to keep):');
+            const roles = prompt('Roles (comma separated, e.g. ROLE_USER,ROLE_ADMIN)');
+            const body = { name: name || undefined, password: (password && password.length>0) ? password : undefined, roles: roles ? roles.split(',').map(s=>s.trim()).filter(s=>s) : undefined };
+            try{
+                const res = await fetch('/api/v1/admin/users/'+id, {method:'PUT', headers: authHeaders(), body: JSON.stringify(body)});
+                if(!res.ok){ alert('Update failed: '+await res.text()); return; }
+                await loadUsers();
+            }catch(e){ alert('Error: '+e.message); }
+        }
+    });
+
+    loadUsers();
+</script>
+</body>
+</html>
+

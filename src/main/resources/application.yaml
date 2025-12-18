@@ -23,7 +23,7 @@ spring:
       base-path: /api
 
 server:
-  port: 8080
+  port: 8052
 
 jwt:
   secret: sP8FIs1KWI1Czg+bHFQQcDyulktrPJsY5TyoGe5P7CPNi/uckxAb0OTqPY3/IybiSR7dXnHXktk8x2NzNJixdg==

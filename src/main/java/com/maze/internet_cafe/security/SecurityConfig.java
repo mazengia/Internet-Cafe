@@ -25,6 +25,7 @@ public class SecurityConfig {
 
     private final UserDetailsServiceImp userDetailsServiceImp;
     private final JwtUtil jwtUtil;
+    private final RevokedTokenService revokedTokenService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -42,21 +43,35 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        // Swagger/OpenAPI endpoints
+                        // Require ADMIN to view dashboard and admin UI
+                        .requestMatchers("/dashboard", "/").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // Swagger/OpenAPI and public endpoints
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/api/v1/computers/**",
                                 "/api/agents/heartbeat",
                                 "/ws/**",
+                                // Login and auth should remain public
+                                "/login",
+                                "/login/process",
+                                "/api/auth/**",
+                                "/favicon.ico",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/template/**",
+
+                                "/api/v1/computers/**",
                                 "/sessions/**"
                         ).permitAll()
+
                         // Preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Public endpoints for agent
 
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
@@ -64,7 +79,7 @@ public class SecurityConfig {
 
         // Add JWT Authorization filter BEFORE UsernamePasswordAuthenticationFilter
         http.addFilterBefore(
-                new JWTAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsServiceImp),
+                new JWTAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsServiceImp, revokedTokenService),
                 org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
         );
 

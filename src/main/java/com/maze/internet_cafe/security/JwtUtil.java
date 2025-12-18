@@ -41,6 +41,11 @@ public class JwtUtil implements Serializable {
 
     }
 
+    public long getExpirationEpochMillis(String token) {
+        Date d = getExpirationDateFromToken(token);
+        return d == null ? 0L : d.getTime();
+    }
+
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
 
         final Claims claims = getAllClaimsFromToken(token);

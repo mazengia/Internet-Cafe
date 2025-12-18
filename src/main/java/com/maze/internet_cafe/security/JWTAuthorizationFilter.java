@@ -2,15 +2,11 @@ package com.maze.internet_cafe.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maze.internet_cafe.exception.ApiError;
-import io.jsonwebtoken.*;
-import io.micrometer.core.instrument.util.StringUtils;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,41 +14,60 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final RevokedTokenService revokedTokenService;
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsService userDetailsService, RevokedTokenService revokedTokenService) {
         super(authenticationManager);
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.revokedTokenService = revokedTokenService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(SecurityConstants.TOKEN_HEADER);
+        // If no Authorization header, check for a cookie named JWT
+        if ((header == null || header.isBlank()) && request.getCookies() != null) {
+            for (Cookie c : request.getCookies()) {
+                if ("JWT".equals(c.getName()) && c.getValue() != null && !c.getValue().isBlank()) {
+                    header = SecurityConstants.TOKEN_PREFIX + c.getValue();
+                    break;
+                }
+            }
+        }
+
         String username = null;
         String token = null;
         try {
             if (header != null && header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
-                token = header.substring(7);
+                token = header.substring(SecurityConstants.TOKEN_PREFIX.length());
+                // If token is revoked, respond 401
+                if (revokedTokenService.isRevoked(token)) {
+                    ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, new RuntimeException("Token revoked"));
+                    response.setContentType("application/json");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write(new ObjectMapper().writeValueAsString(apiError));
+                    return;
+                }
                 username = jwtUtil.getUsernameFromToken(token);
             }
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null && org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 if (jwtUtil.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()
                     );
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
         } catch (ExpiredJwtException e) {
@@ -65,42 +80,4 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(SecurityConstants.TOKEN_HEADER);
-        if (StringUtils.isNotEmpty(token) && token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
-            try {
-                byte[] signingKey = SecurityConstants.JWT_SECRET.getBytes();
-
-
-                var parsedToken = Jwts.parser()
-                        .setSigningKey(signingKey)
-                        .parseClaimsJws(token.replace("Bearer ", ""));
-
-                String username = parsedToken
-                        .getBody()
-                        .getSubject();
-
-                List<GrantedAuthority> authorities = ((List<?>) parsedToken.getBody()
-                        .get("rol")).stream()
-                        .map(authority -> new SimpleGrantedAuthority((String) authority))
-                        .collect(Collectors.toList());
-
-                if (StringUtils.isNotEmpty(username)) {
-                    return new UsernamePasswordAuthenticationToken(username, null, authorities);
-                }
-            } catch (ExpiredJwtException exception) {
-                log.warn("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());
-            } catch (UnsupportedJwtException exception) {
-                log.warn("Request to parse unsupported JWT : {} failed : {}", token, exception.getMessage());
-            } catch (MalformedJwtException exception) {
-                log.warn("Request to parse invalid JWT : {} failed : {}", token, exception.getMessage());
-            } catch (SignatureException exception) {
-                log.warn("Request to parse JWT with invalid signature : {} failed : {}", token, exception.getMessage());
-            } catch (IllegalArgumentException exception) {
-                log.warn("Request to parse empty or null JWT : {} failed : {}", token, exception.getMessage());
-            }
-        }
-
-        return null;
-    }
 }

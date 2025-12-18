@@ -5,6 +5,7 @@
  */
 package com.maze.internet_cafe.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -22,6 +23,7 @@ public class User {
     private String role;
     @Column(unique = true)
     private String username;
+    @JsonIgnore
     private String password;
     private boolean enabled;
     private boolean accountNonExpired;

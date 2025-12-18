@@ -26,8 +26,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class AgentService {
     private Long currentComputerId;
-    static final String SERVER = "http://localhost:8080";
-    static final String WS_SERVER = "ws://localhost:8080/ws";
+    // Use the same server/port as the application (configured in application.yaml: server.port=8052)
+    static final String SERVER = "http://localhost:8052";
+    static final String WS_SERVER = "ws://localhost:8052/ws";
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStart() {
@@ -143,7 +144,7 @@ public class AgentService {
                 WebClient.create(SERVER)
                         .post()
                         .uri("/sessions/terminate")
-                        .bodyValue(Map.of("mac", NetworkUtil.machineName()))
+                        .bodyValue(Map.of("name", NetworkUtil.machineName()))
                         .retrieve()
                         .toBodilessEntity()
                         .block(Duration.ofSeconds(2));
@@ -152,11 +153,12 @@ public class AgentService {
         }));
     }
     public void stopActiveSession() {
+        System.out.println("NetworkUtil.machineName()="+NetworkUtil.machineName());
         try {
             WebClient.create(SERVER)
                     .post()
                     .uri("/sessions/terminate")
-                    .bodyValue(Map.of("mac", NetworkUtil.machineName()))
+                    .bodyValue(Map.of("name", NetworkUtil.machineName()))
                     .retrieve()
                     .toBodilessEntity()
                     .block(Duration.ofSeconds(2));

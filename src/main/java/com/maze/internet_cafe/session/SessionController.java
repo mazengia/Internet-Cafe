@@ -68,10 +68,34 @@ public class SessionController {
     public ResponseEntity<Session> get(@PathVariable Long id) {
         return ResponseEntity.ok(sessionService.get(id));
     }
+
+    /**
+     * Terminate a running session on a computer by passing either `mac` (mac address) or `name` (machine name) in the body.
+     * Example body: { "mac": "AA:BB:..." } or { "name": "host-name" }
+     */
     @PostMapping("/terminate")
     public ResponseEntity<Void> terminate(@RequestBody Map<String, String> request) {
-        String name = request.get("mac");
+        String name = request.get("name");
+        if ((name == null || name.isBlank()) && (name == null || name.isBlank())) {
+            return ResponseEntity.badRequest().build();
+        }
+
         sessionService.terminateByName(name);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // New endpoint: stop running session (no sessionId required) - convenient for UI
+    @PostMapping("/{computerId}/stop-running")
+    public ResponseEntity<Session> stopRunning(@PathVariable Long computerId) {
+        Session stopped = sessionService.stopRunningSession(computerId);
+        return ResponseEntity.ok(stopped);
+    }
+
+    // New endpoint: terminate running session immediately by computer id
+    @PostMapping("/{computerId}/terminate-now")
+    public ResponseEntity<Void> terminateNow(@PathVariable Long computerId) {
+        sessionService.terminateByComputerId(computerId);
         return ResponseEntity.ok().build();
     }
 }

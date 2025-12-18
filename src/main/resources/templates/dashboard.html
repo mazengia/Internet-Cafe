@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Internet Cafe Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f4f4f4; }
+        .running { background: #eaffea; }
+        .stopped { background: #ffdfe0; }
+        .controls button { margin-right: 6px; }
+        .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <h1>Internet Cafe Dashboard</h1>
+    <div id="user-area">
+        <a href="/login">Login</a> |
+        <a href="/users">Users</a>
+    </div>
+</div>
+<p>Live computer sessions (updates in real-time)</p>
+<table id="computers">
+    <thead>
+    <tr>
+        <th>Computer</th>
+        <th>MAC</th>
+        <th>Status</th>
+        <th>Elapsed (s)</th>
+        <th>Price/hr</th>
+        <th>Total Cost</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- use stomp.js that supports raw WebSocket connections -->
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+<script>
+    const host = window.location.hostname;
+    const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl = `${wsProtocol}://${host}:${port}/ws`;
+
+    // Table and state
+    const tbody = document.querySelector('#computers tbody');
+    const state = { computers: {}, sessions: {} };
+
+    function renderComputers() {
+        tbody.innerHTML = '';
+        Object.values(state.computers).forEach(c => {
+            const tr = document.createElement('tr');
+            tr.id = 'comp-' + c.id;
+            tr.className = c.status === 'IN_USE' ? 'running' : 'stopped';
+
+            const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
+            const totalCost = state.sessions[c.id] ? state.sessions[c.id].totalCost || '-' : '-';
+
+            tr.innerHTML = `
+                <td>${escapeHtml(c.name || '')}</td>
+                <td>${escapeHtml(c.macAddress || '')}</td>
+                <td>${escapeHtml(c.status || '')}</td>
+                <td class="elapsed">${elapsed}</td>
+                <td class="price">${c.branchPrice || '-'}</td>
+                <td class="totalCost">${totalCost}</td>
+                <td class="controls">
+                    <button class="start" data-id="${c.id}">Start</button>
+                    <button class="stop" data-id="${c.id}">Stop</button>
+                    <button class="terminate" data-id="${c.id}" data-name="${escapeHtml(c.name || '')}">Terminate</button>
+                    <button class="lock" data-mac="${escapeHtml(c.macAddress || '')}">Lock</button>
+                    <button class="unlock" data-mac="${escapeHtml(c.macAddress || '')}">Unlock</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function escapeHtml(s){
+        return String(s || '').replace(/[&<>"'`]/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;', '`':'&#96;'}[m]));
+    }
+
+    function authOptions(extra) {
+        const token = localStorage.getItem('jwt_token');
+        const headers = {'Content-Type':'application/json'};
+        let opts = { headers };
+        if(token) {
+            headers['Authorization'] = 'Bearer ' + token;
+        } else {
+            // use cookie-based auth for server-rendered login
+            opts.credentials = 'same-origin';
+        }
+        if(extra && extra.method) opts.method = extra.method;
+        if(extra && extra.body) opts.body = extra.body;
+        return opts;
+    }
+
+    // Fetch computers via API
+    async function fetchComputers(){
+        try{
+            const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions());
+            if(!res.ok) throw new Error('Failed to fetch computers: ' + res.status);
+            const page = await res.json();
+            (page.content || []).forEach(c => {
+                state.computers[c.id] = {...c, branchPrice: (c.branch && c.branch.pricePerHour ? c.branch.pricePerHour : '-')};
+            });
+            renderComputers();
+        }catch(err){
+            console.error(err);
+            tbody.innerHTML = '<tr><td colspan="7">Unable to load computers: '+escapeHtml(err.message)+'</td></tr>';
+        }
+    }
+
+    // Setup WebSocket + STOMP (raw websocket, no SockJS / /ws/info)
+    const stompClient = new StompJs.Client({
+        brokerURL: wsUrl,
+        onConnect: () => {
+            console.log('STOMP connected');
+            stompClient.subscribe('/topic/sessions', msg => {
+                try{
+                    const payload = JSON.parse(msg.body);
+                    if(payload.id) {
+                        state.sessions[payload.id] = {elapsed: payload.elapsed, totalCost: payload.totalCost};
+                        const row = document.getElementById('comp-' + payload.id);
+                        if(row){
+                            row.querySelector('.elapsed').innerText = payload.elapsed;
+                            if(payload.totalCost !== undefined && row.querySelector('.totalCost')) row.querySelector('.totalCost').innerText = payload.totalCost;
+                            row.classList.add('running');
+                            row.querySelector('td:nth-child(3)').innerText = 'IN_USE';
+                        }
+                    } else if(payload.macAddress) {
+                        const row = Array.from(document.querySelectorAll('#computers tbody tr')).find(r => r.querySelector('td:nth-child(2)') && r.querySelector('td:nth-child(2)').innerText === payload.macAddress);
+                        if(row){
+                            row.querySelector('.elapsed').innerText = payload.elapsed;
+                            row.classList.add('running');
+                            row.querySelector('td:nth-child(3)').innerText = 'IN_USE';
+                        }
+                    }
+                }catch(e){console.error('invalid session payload', e, msg.body)}
+            });
+        },
+        onStompError: frame => { console.error('STOMP error', frame); },
+        debug: (str) => { /* disable noisy logs or comment out */ }
+    });
+
+    stompClient.activate();
+
+    // Actions
+    document.addEventListener('click', async (e) => {
+        try{
+            if(e.target.matches('.start')){
+                const id = e.target.getAttribute('data-id');
+                const price = prompt('Price per hour (leave empty to use branch price):');
+                let body = {};
+                if(price) body.pricePerHour = parseFloat(price);
+                const res = await fetch(`/sessions/${id}/start`, authOptions({method: 'POST', body: JSON.stringify(body)}));
+                if(!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('start failed: '+res.status+' '+txt);
+                }
+                const dto = await res.json();
+                if(dto && dto.computer && dto.computer.id){
+                    state.sessions[dto.computer.id] = {elapsed: 0, totalCost: dto.totalCost || '-'};
+                    state.computers[dto.computer.id].status = 'IN_USE';
+                    renderComputers();
+                } else {
+                    await fetchComputers();
+                }
+            }
+
+            if(e.target.matches('.stop')){
+                const id = e.target.getAttribute('data-id');
+                const stopRes = await fetch(`/sessions/${id}/stop-running`, authOptions({method: 'POST'}));
+                if(!stopRes.ok){
+                    const txt = await stopRes.text();
+                    throw new Error('Stop failed: '+stopRes.status+' '+txt);
+                }
+                const stopped = await stopRes.json();
+                state.sessions[id] = {elapsed: 0, totalCost: stopped.totalCost || '-'};
+                state.computers[id].status = 'AVAILABLE';
+                renderComputers();
+            }
+
+            if(e.target.matches('.terminate')){
+                const id = e.target.getAttribute('data-id');
+                const name = e.target.getAttribute('data-name');
+                if(!confirm('Terminate running session on '+name+'?')) return;
+                const res = await fetch(`/sessions/${id}/terminate-now`, authOptions({method: 'POST'}));
+                if(!res.ok){
+                    const txt = await res.text();
+                    throw new Error('Terminate failed: '+res.status+' '+txt);
+                }
+                alert('Terminated');
+                await fetchComputers();
+            }
+
+            if(e.target.matches('.lock') || e.target.matches('.unlock')){
+                const mac = e.target.getAttribute('data-mac');
+                const action = e.target.matches('.lock') ? 'LOCK' : 'UNLOCK';
+                const res = await fetch(`/api/v1/admin/computers/${encodeURIComponent(mac)}/command?action=${action}`, authOptions({method: 'POST'}));
+                if(!res.ok){
+                    const txt = await res.text();
+                    throw new Error('Command failed: '+res.status+' '+txt);
+                }
+                const text = await res.text();
+                alert(text);
+            }
+        }catch(err){
+            console.error('Action error', err);
+            alert('Error: '+err.message);
+        }
+    });
+
+    async function updateUserArea(){
+        const token = localStorage.getItem('jwt_token');
+        const userArea = document.getElementById('user-area');
+        if(!token){
+            // try cookie-based me() call
+            try{
+                const res = await fetch('/api/auth/me', {credentials: 'same-origin'});
+                if(!res.ok) throw new Error('unauth');
+                const json = await res.json();
+                userArea.innerHTML = 'Signed in as <strong>' + (json.username || '') + '</strong> <button id="logout">Logout</button> | <a href="/users">Users</a>';
+                document.getElementById('logout').addEventListener('click', async () => {
+                    try {
+                        await fetch('/api/auth/logout', {method: 'POST', credentials: 'same-origin'});
+                    } catch(e) { /* ignore */ }
+                    document.cookie = 'JWT=; Path=/; Max-Age=0';
+                    localStorage.removeItem('jwt_token');
+                    updateUserArea();
+                });
+                return;
+            }catch(e){
+                userArea.innerHTML = '<a href="/login">Login</a> | <a href="/users">Users</a>';
+                return;
+            }
+        }
+        try{
+            const res = await fetch('/api/auth/me', {headers: {'Authorization':'Bearer '+token}});
+            if(!res.ok) throw new Error('unauth');
+            const json = await res.json();
+            userArea.innerHTML = 'Signed in as <strong>' + (json.username || '') + '</strong> <button id="logout">Logout</button> | <a href="/users">Users</a>';
+            document.getElementById('logout').addEventListener('click', async () => {
+                // call server logout to clear cookie if present, then clear local token
+                try {
+                    await fetch('/api/auth/logout', {method: 'POST', credentials: 'same-origin'});
+                } catch(e) { /* ignore */ }
+                localStorage.removeItem('jwt_token');
+                updateUserArea();
+            });
+        }catch(e){
+            localStorage.removeItem('jwt_token');
+            userArea.innerHTML = '<a href="/login">Login</a> | <a href="/users">Users</a>';
+        }
+    }
+
+    // call at startup
+    updateUserArea();
+
+    // Initial load
+    fetchComputers();
+
+    // Optional: poll every 10s to refresh computers list (in case new machines added)
+    setInterval(fetchComputers, 10000);
+</script>
+</body>
+</html>
+

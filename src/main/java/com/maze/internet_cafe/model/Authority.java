@@ -1,5 +1,6 @@
 package com.maze.internet_cafe.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -13,5 +14,6 @@ public class Authority {
     private long id;
     private String name;
     @ManyToMany(mappedBy = "authorities")
+    @JsonIgnore
     private Set<User> user;
 }

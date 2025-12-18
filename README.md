@@ -40,8 +40,25 @@ Configuration
 - Test configuration is in `src/test/resources/application-test.properties`.
 - You can configure data source, server port, JWT secret and other properties there.
 
+Dashboard UI
+
+This project includes a simple server-rendered dashboard for monitoring computers and live sessions.
+
+- URL: `http://<host>:<port>/dashboard` (by default port is set in `application.yaml`, currently 8052).
+- The dashboard uses WebSocket/STOMP to subscribe to `/topic/sessions` and shows live elapsed times for running sessions.
+- The dashboard also exposes "Lock" and "Unlock" buttons which POST to the admin command endpoint to send WebSocket commands to computers.
+
+Authentication and UI
+- A simple login page is available at `/login`. You can sign-in to obtain a JWT which will be stored in `localStorage` and used for subsequent API calls from the dashboard.
+- Default admin credentials created at first startup:
+  - username: `admin`
+  - password: `admin`
+
+Notes about access and security
+- The dashboard endpoint (`/dashboard`) and websocket endpoint (`/ws`) are permitted in the default security config for demo and local usage. If you change security settings, ensure the dashboard and `/ws` remain accessible to whichever users or clients you expect.
+
 Authentication and roles
-- Authenticate with POST /api/authenticate using JSON { "username": "...", "password": "..." }.
+- Authenticate with POST /api/auth/login using JSON { "username": "...", "password": "..." }.
 - Response contains { "token": "<jwt>" }.
 - Send the JWT in requests with the Authorization header: `Authorization: Bearer <token>`.
 
@@ -51,12 +68,12 @@ Built-in roles (used by the API):
 - USER: Start/stop sessions (if allowed) and view their own session info.
 
 Main API endpoints
-(Assumes base path http://localhost:8080)
+(Assumes base path http://localhost:8052)
 
 Authentication
-- POST /api/authenticate
+- POST /api/auth/login
   - Request: { "username": "admin", "password": "secret" }
-  - Response: { "token": "<jwt>" }
+  - Response: { "token": "<jwt>", "userId": "username" }
 
 Branch management
 - (Admin-only) The code contains a JPA `Branch` entity. Branches are created in tests via repository; you can create a simple controller or use data SQL if you need seed data.
@@ -75,14 +92,12 @@ Computer management
   - Registers a computer assigned to a branch.
 
 Session management
-- POST /api/v1/computers/{computerId}/sessions/start
-  - Roles: AGENT, ADMIN, USER (depending on your security config)
+- POST /sessions/{computerId}/start
   - Optional body: { "pricePerHour": 5.00 }
   - Starts a session for the specified computer. If `pricePerHour` is omitted it falls back to the branch price.
 
-- POST /api/v1/computers/{computerId}/sessions/{sessionId}/stop
-  - Roles: AGENT, ADMIN, USER
-  - Stops the session and calculates total duration and cost.
+- POST /sessions/{computerId}/stop-running
+  - Stops the running session for the given computer id and returns the stopped session details.
 
 Billing and reports
 - GET /api/v1/billing/reports/daily?from=YYYY-MM-DD&to=YYYY-MM-DD
@@ -93,15 +108,15 @@ Example curl flows
 - Authenticate (get token):
 
 ```bash
-curl -s -X POST http://localhost:8080/api/authenticate \
+curl -s -X POST http://localhost:8052/api/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"username":"admin","password":"secret"}'
+  -d '{"username":"admin","password":"admin"}'
 ```
 
 - Create a computer (replace <token>):
 
 ```bash
-curl -s -X POST http://localhost:8080/api/v1/computers \
+curl -s -X POST http://localhost:8052/api/v1/computers \
   -H "Authorization: Bearer <token>" \
   -H 'Content-Type: application/json' \
   -d '{"name":"PC-01","macAddress":"AA:BB:CC:DD:EE:FF","ipAddress":"10.0.0.2","osType":"WINDOWS","branchId":1}'
@@ -110,7 +125,7 @@ curl -s -X POST http://localhost:8080/api/v1/computers \
 - Start a session:
 
 ```bash
-curl -s -X POST http://localhost:8080/api/v1/computers/1/sessions/start \
+curl -s -X POST http://localhost:8052/sessions/1/start \
   -H "Authorization: Bearer <token>" \
   -H 'Content-Type: application/json' \
   -d '{"pricePerHour":5.00}'
@@ -119,14 +134,7 @@ curl -s -X POST http://localhost:8080/api/v1/computers/1/sessions/start \
 - Stop a session (replace IDs):
 
 ```bash
-curl -s -X POST http://localhost:8080/api/v1/computers/1/sessions/1/stop \
-  -H "Authorization: Bearer <token>"
-```
-
-- Get daily billing report:
-
-```bash
-curl -s -X GET "http://localhost:8080/api/v1/billing/reports/daily?from=2025-01-01&to=2025-01-31" \
+curl -s -X POST http://localhost:8052/sessions/1/stop-running \
   -H "Authorization: Bearer <token>"
 ```
 
