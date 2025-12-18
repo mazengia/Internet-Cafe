@@ -1,0 +1,60 @@
+<div class="glass p-3">
+  <h5 class="mb-3">Users</h5>
+
+  <div class="row g-2 mb-3">
+    <div class="col-md-3"><input id="u-username" class="form-control" placeholder="Username"></div>
+    <div class="col-md-3"><input id="u-name" class="form-control" placeholder="Name"></div>
+    <div class="col-md-3"><input id="u-password" class="form-control" placeholder="Password"></div>
+    <div class="col-md-3">
+      <button class="btn btn-primary w-100" onclick="createUser()">Create</button>
+    </div>
+  </div>
+
+  <table class="table table-sm text-light">
+    <thead>
+    <tr><th>ID</th><th>Username</th><th>Name</th><th>Action</th></tr>
+    </thead>
+    <tbody id="users-body"></tbody>
+  </table>
+</div>
+
+<script>
+  async function initUsers(){
+    const tbody = document.getElementById('users-body');
+    const res = await fetch('/api/v1/admin/users');
+    const users = await res.json();
+
+    tbody.innerHTML = '';
+    users.forEach(u=>{
+      tbody.innerHTML += `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.username}</td>
+        <td>${u.name||''}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">Delete</button>
+        </td>
+      </tr>`;
+    });
+  }
+
+  async function createUser(){
+    await fetch('/api/v1/admin/users',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        username:u-username.value,
+        name:u-name.value,
+        password:u-password.value,
+        roles:['ADMIN']
+      })
+    });
+    initUsers();
+  }
+
+  async function deleteUser(id){
+    if(!confirm('Delete user?')) return;
+    await fetch('/api/v1/admin/users/'+id,{method:'DELETE'});
+    initUsers();
+  }
+</script>

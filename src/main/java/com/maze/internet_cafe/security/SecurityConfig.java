@@ -66,7 +66,11 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/template/**",
-
+                                // static SPA fragments - allow all html so fragments can be fetched
+                                "/**/*.html",
+                                "/static/**",
+                                "/assets/**",
+                                "/template/**",
                                 "/api/v1/computers/**",
                                 "/sessions/**"
                         ).permitAll()

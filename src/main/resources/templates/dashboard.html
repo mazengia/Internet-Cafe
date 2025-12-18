@@ -1,155 +1,489 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard • Internet Cafe</title>
+    <title>Internet Cafe • Control Center</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/icon.v1.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-      body { background: linear-gradient(180deg,#f4f7fb,#ffffff); min-height:100vh; }
-      .topbar { padding:18px 0; }
-      .logo { width:44px; height:44px; object-fit:contain; border-radius:8px; }
-      .card-computer { border-radius:10px; box-shadow: 0 6px 20px rgba(20,40,80,0.06); }
-      .elapsed { font-weight:600; }
-      @media (min-width: 992px) {
-        .grid-col { flex: 0 0 33.3333%; max-width:33.3333%; }
-      }
+        :root{
+            --primary:#4f46e5; /* indigo */
+            --success:#22c55e;
+            --warning:#f59e0b;
+            --danger:#ef4444;
+            --bg:#0b1020;
+            --glass:rgba(255,255,255,.08);
+            --border:rgba(255,255,255,.15);
+        }
+        body{
+            background: radial-gradient(1200px 600px at 10% -10%, #1f2a6b 0%, transparent 40%),
+            radial-gradient(1200px 600px at 110% 10%, #0ea5e9 0%, transparent 35%),
+            var(--bg);
+            min-height:100vh; color:#e5e7eb;
+        }
+        .glass{
+            background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+            backdrop-filter: blur(14px);
+            border:1px solid var(--border);
+            border-radius:16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,.35);
+        }
+        .sidebar{
+            position:sticky; top:16px; height:calc(100vh - 32px);
+        }
+        .brand{
+            display:flex; align-items:center; gap:12px;
+        }
+        .brand img{ width:40px; height:40px; border-radius:10px; }
+        .nav-link{ color:#c7d2fe; border-radius:10px; }
+        .nav-link.active, .nav-link:hover{ background:rgba(79,70,229,.25); color:#fff; }
+        .stat{
+            display:flex; align-items:center; gap:12px;
+        }
+        .stat i{ font-size:1.6rem; }
+        .computer{
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .computer:hover{ transform: translateY(-2px); box-shadow:0 30px 60px rgba(0,0,0,.45); }
+        .pill{ padding:.35rem .65rem; border-radius:999px; font-size:.75rem; }
+        .pill.success{ background:rgba(34,197,94,.2); color:#86efac; }
+        .pill.muted{ background:rgba(148,163,184,.2); color:#e5e7eb; }
+        .metric{ font-weight:600; font-size:1.05rem; }
+        .btn-soft{ background:rgba(255,255,255,.08); color:#fff; border:1px solid var(--border); }
+        .btn-soft:hover{ background:rgba(255,255,255,.15); }
+        .table{ color:#e5e7eb; }
+        .table thead{ color:#c7d2fe; }
     </style>
-  </head>
-  <body>
-    <header class="container topbar">
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center gap-3">
-          <img src="/images/icon.v1.png" alt="logo" class="logo" />
-          <div>
-            <h4 class="mb-0">Internet Cafe</h4>
-            <small class="text-muted">Real-time sessions and controls</small>
-          </div>
-        </div>
-        <div id="user-area">
-          <a href="/login" class="btn btn-outline-primary me-2">Login</a>
-          <a href="/users" class="btn btn-outline-secondary">Users</a>
-        </div>
-      </div>
-    </header>
-
-    <main class="container py-3">
-      <div class="row mb-3">
-        <div class="col-12">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="mb-0">Computers</h5>
-            <div>
-              <button id="refresh" class="btn btn-sm btn-outline-secondary">Refresh</button>
+</head>
+<body>
+<div class="container-fluid py-3">
+    <div class="row g-3">
+        <!-- Sidebar -->
+        <aside class="col-12 col-lg-2">
+            <div class="glass sidebar p-3">
+                <div class="brand mb-3">
+                    <img src="/images/icon.v1.png" alt="logo">
+                    <div>
+                        <div class="fw-semibold">Internet Cafe</div>
+                        <small class="text-secondary">Control Center</small>
+                    </div>
+                </div>
+                <nav class="nav flex-column gap-1">
+                    <a class="nav-link active" href="#"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#usersOffcanvas"><i class="bi bi-people me-2"></i>Users</a>
+                    <a class="nav-link" href="#sessions"><i class="bi bi-clock-history me-2"></i>Sessions</a>
+                    <a class="nav-link" href="#settings"><i class="bi bi-gear me-2"></i>Settings</a>
+                </nav>
+                <hr class="border-secondary my-3">
+                <div id="user-area" class="small">
+                    <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+                    <button id="open-users" class="btn btn-outline-secondary" type="button">Users</button>
+                </div>
             </div>
-          </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="col-12 col-lg-10">
+            <!-- Stats -->
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-4">
+                    <div class="glass p-3 stat"><i class="bi bi-pc-display"></i><div><div class="metric" id="stat-total">—</div><small class="text-secondary">Total Computers</small></div></div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="glass p-3 stat"><i class="bi bi-play-circle"></i><div><div class="metric" id="stat-running">—</div><small class="text-secondary">Running Sessions</small></div></div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="glass p-3 stat"><i class="bi bi-cash-coin"></i><div><div class="metric" id="stat-revenue">—</div><small class="text-secondary">Live Revenue</small></div></div>
+                </div>
+            </div>
+
+
+            <div id="computers-grid" class="row g-3"></div>
+
+            <!-- Table -->
+            <div class="glass p-3 mt-4" id="sessions">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Running sessions</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle" id="sessions-table">
+                        <thead><tr><th>Computer</th><th>MAC</th><th>Elapsed</th><th>Price/hr</th><th>Total</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Users Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="usersOffcanvas" aria-labelledby="usersOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="usersOffcanvasLabel">Users</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="mb-3">
+            <div class="row g-2">
+                <div class="col-12 col-md-4"><input id="new-username" class="form-control" placeholder="Username" aria-label="New username"></div>
+                <div class="col-12 col-md-4"><input id="new-name" class="form-control" placeholder="Name" aria-label="New name"></div>
+                <div class="col-12 col-md-4"><input id="new-password" class="form-control" placeholder="Password" aria-label="New password"></div>
+            </div>
+            <div class="row g-2 mt-2">
+                <div class="col-9"><input id="new-roles" class="form-control" placeholder="Roles (comma separated)" aria-label="New roles"></div>
+                <div class="col-3 text-end"><button id="create-user" class="btn btn-primary">Create</button></div>
+            </div>
         </div>
-      </div>
 
-      <div id="computers-grid" class="row g-3">
-        <!-- cards inserted here -->
-      </div>
-
-      <div class="mt-4">
-        <h6>Running sessions (detailed)</h6>
         <div class="table-responsive">
-          <table class="table table-sm align-middle" id="sessions-table">
-            <thead class="table-light"><tr><th>Computer</th><th>MAC</th><th>Elapsed(s)</th><th>Price/hr</th><th>Total</th><th>Actions</th></tr></thead>
-            <tbody></tbody>
-          </table>
+            <table class="table table-sm" id="users-list-table">
+                <thead><tr><th>ID</th><th>Username</th><th>Name</th><th>Roles</th><th>Action</th></tr></thead>
+                <tbody></tbody>
+            </table>
         </div>
-      </div>
-    </main>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Edit User Modal (reused) -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id">
+                <div class="mb-3"><label class="form-label" for="edit-name">Name</label><input id="edit-name" class="form-control" aria-label="Edit name"></div>
+                <div class="mb-3"><label class="form-label" for="edit-password">Password (leave empty to keep)</label><input id="edit-password" class="form-control" type="password" aria-label="Edit password"></div>
+                <div class="mb-3"><label class="form-label" for="edit-roles">Roles (comma separated)</label><input id="edit-roles" class="form-control" aria-label="Edit roles"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="save-edit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script>
-      // Reuse authOptions from previous templates (simple helper)
-      function authOptions(extra) { const token = localStorage.getItem('jwt_token'); const headers = {'Content-Type':'application/json'}; let opts={headers}; if(token) headers['Authorization']='Bearer '+token; else opts.credentials='same-origin'; if(extra&&extra.method) opts.method=extra.method; if(extra&&extra.body) opts.body=extra.body; return opts; }
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* JS: fetch data, render cards/table, STOMP subscription, actions, stats, auth/logout */
 
-      const state={computers:{}, sessions:{}};
-      const grid = document.getElementById('computers-grid');
-      const sessionsTbody = document.querySelector('#sessions-table tbody');
+    // auth helper: send Authorization header if token in localStorage, otherwise use cookie (same-origin)
+    function authOptions(extra) {
+        const token = localStorage.getItem('jwt_token');
+        const headers = {'Content-Type':'application/json'};
+        const opts = { headers };
+        if (token) headers['Authorization'] = 'Bearer ' + token; else opts.credentials = 'same-origin';
+        if (extra && extra.method) opts.method = extra.method;
+        if (extra && extra.body) opts.body = extra.body;
+        return opts;
+    }
 
-      function renderGrid(){
-        grid.innerHTML='';
-        Object.values(state.computers).forEach(c=>{
-          const col = document.createElement('div'); col.className='col-12 col-md-6 col-lg-4';
-          const statusBadge = c.status==='IN_USE' ? '<span class="badge bg-success">In use</span>' : '<span class="badge bg-secondary">Available</span>';
-          const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
-          const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost||'-') : '-';
-          col.innerHTML = `
-            <div class="card card-computer p-3 h-100">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
-                  <h6 class="mb-1">${escape(c.name||'')}</h6>
-                  <div class="text-muted small">${escape(c.macAddress||'')}</div>
-                </div>
-                <div>${statusBadge}</div>
-              </div>
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
-                  <div class="small text-muted">Elapsed</div>
-                  <div class="elapsed">${elapsed}</div>
-                </div>
-                <div>
-                  <div class="small text-muted">Price/hr</div>
-                  <div>${c.branchPrice||'-'}</div>
-                </div>
-                <div>
-                  <div class="small text-muted">Total</div>
-                  <div>${total}</div>
-                </div>
-              </div>
-              <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-success start-btn" data-id="${c.id}">Start</button>
-                <button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button>
-                <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${escape(c.name||'')}">Terminate</button>
-              </div>
-            </div>`;
-          grid.appendChild(col);
+    // state
+    const state = { computers: {}, sessions: {} };
+
+    // elements
+    const gridEl = document.getElementById('computers-grid');
+    const sessionsTbody = document.querySelector('#sessions-table tbody');
+    const statTotal = document.getElementById('stat-total');
+    const statRunning = document.getElementById('stat-running');
+    const statRevenue = document.getElementById('stat-revenue');
+
+    // render functions
+    function renderGrid() {
+        gridEl.innerHTML = '';
+        const comps = Object.values(state.computers || {});
+        comps.forEach(c => {
+            const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
+            const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost || '-') : '-';
+            const cardHtml = cardTemplate(c, elapsed, total);
+            gridEl.insertAdjacentHTML('beforeend', cardHtml);
         });
         renderSessionsTable();
-      }
+        updateStats();
+    }
 
-      function renderSessionsTable(){
-        sessionsTbody.innerHTML='';
-        Object.values(state.computers).forEach(c=>{
-          if(c.status==='IN_USE'){
-            const tr = document.createElement('tr');
-            const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
-            const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost||'-') : '-';
-            tr.innerHTML = `<td>${escape(c.name||'')}</td><td>${escape(c.macAddress||'')}</td><td>${elapsed}</td><td>${c.branchPrice||'-'}</td><td>${total}</td><td><button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button> <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${escape(c.name||'')}">Terminate</button></td>`;
-            sessionsTbody.appendChild(tr);
-          }
+    function renderSessionsTable(){
+        sessionsTbody.innerHTML = '';
+        Object.values(state.computers).forEach(c => {
+            if (c.status === 'IN_USE'){
+                const elapsed = state.sessions[c.id] ? state.sessions[c.id].elapsed : '-';
+                const total = state.sessions[c.id] ? (state.sessions[c.id].totalCost || '-') : '-';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${escapeHtml(c.name||'')}</td><td>${escapeHtml(c.macAddress||'')}</td><td>${elapsed}</td><td>${c.branchPrice||'-'}</td><td>${total}</td><td><button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button> <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${escapeHtml(c.name||'')}">Terminate</button></td>`;
+                sessionsTbody.appendChild(tr);
+            }
         });
-      }
+    }
 
-      function escape(s){ return String(s||'').replace(/[&<>"']/g, function(m){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]) }); }
+    function updateStats(){
+        const comps = Object.values(state.computers || {});
+        const total = comps.length;
+        const running = comps.filter(c => c.status === 'IN_USE').length;
+        let revenue = 0;
+        Object.keys(state.sessions).forEach(id => {
+            const s = state.sessions[id];
+            if (s && s.totalCost) {
+                const v = parseFloat(s.totalCost);
+                if (!isNaN(v)) revenue += v;
+            }
+        });
+        statTotal.innerText = total;
+        statRunning.innerText = running;
+        statRevenue.innerText = revenue ? revenue.toFixed(2) : '-';
+    }
 
-      async function fetchComputers(){ try{ const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions()); if(!res.ok) return; const page = await res.json(); (page.content||[]).forEach(c=> state.computers[c.id] = {...c, branchPrice: (c.branch && c.branch.pricePerHour ? c.branch.pricePerHour : '-')}); renderGrid(); }catch(e){ console.error(e); } }
+    function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-      // websocket + stomp
-      const host = window.location.hostname; const port = window.location.port || (window.location.protocol==='https:'?'443':'80'); const wsProtocol = window.location.protocol==='https:' ? 'wss' : 'ws'; const wsUrl = `${wsProtocol}://${host}:${port}/ws`;
-      const stompClient = new StompJs.Client({ brokerURL: wsUrl, onConnect: ()=>{ stompClient.subscribe('/topic/sessions', msg=>{ try{ const p = JSON.parse(msg.body); if(p.id){ state.sessions[p.id]= {elapsed:p.elapsed, totalCost:p.totalCost}; if(state.computers[p.id]) state.computers[p.id].status='IN_USE'; } else if(p.macAddress){ const comp = Object.values(state.computers).find(x=>x.macAddress===p.macAddress); if(comp) { state.sessions[comp.id] = {elapsed:p.elapsed, totalCost:p.totalCost}; comp.status='IN_USE'; } } renderGrid(); }catch(e){console.error(e);} }); }, onStompError: e=>console.error(e), debug:()=>{} });
-      stompClient.activate();
+    // card template: returns HTML for a computer card
+    function cardTemplate(c, elapsed, total){
+        const name = escapeHtml(c.name || ('Computer ' + (c.id||'')));
+        const mac = escapeHtml(c.macAddress || '');
+        const price = c.branchPrice || '-';
+        const statusBadge = (c.status === 'IN_USE') ? `<span class="pill success">IN USE</span>` : `<span class="pill muted">AVAILABLE</span>`;
+        return `
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="glass p-3 computer h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <div class="fw-semibold">${name}</div>
+                        <div class="small text-muted">${mac}</div>
+                    </div>
+                    <div>${statusBadge}</div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <div class="small text-muted">Elapsed</div>
+                        <div class="metric">${elapsed}</div>
+                    </div>
+                    <div>
+                        <div class="small text-muted">Price/hr</div>
+                        <div>${price}</div>
+                    </div>
+                    <div>
+                        <div class="small text-muted">Total</div>
+                        <div>${total}</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-success start-btn" data-id="${c.id}"><i class="bi bi-play-fill"></i> Start</button>
+                    <button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}"><i class="bi bi-stop-fill"></i> Stop</button>
+                    <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${name}"><i class="bi bi-x-lg"></i> Terminate</button>
+                </div>
+            </div>
+        </div>`;
+    }
 
-      // actions (delegated)
-      document.addEventListener('click', async (ev)=>{
-        const t = ev.target;
-        if(t.matches('.start-btn')){ const id=t.dataset.id; const price = prompt('Price per hour (optional)'); const body = price? JSON.stringify({pricePerHour:parseFloat(price)}):JSON.stringify({}); const r = await fetch(`/sessions/${id}/start`, authOptions({method:'POST', body})); if(r.ok){ const j=await r.json(); state.computers[id].status='IN_USE'; renderGrid(); } else { alert('Failed to start'); } }
-        if(t.matches('.stop-btn')){ const id=t.dataset.id; const r = await fetch(`/sessions/${id}/stop-running`, authOptions({method:'POST'})); if(r.ok){ const j=await r.json(); state.computers[id].status='AVAILABLE'; renderGrid(); } else alert('Failed to stop'); }
-        if(t.matches('.terminate-btn')){ const id=t.dataset.id; const name=t.dataset.name; if(!confirm('Terminate session on '+name+'?')) return; const r = await fetch(`/sessions/${id}/terminate-now`, authOptions({method:'POST'})); if(r.ok){ alert('Terminated'); fetchComputers(); } else alert('Terminate failed'); }
-      });
+    // fetch computers from API
+    async function fetchComputers(){
+        try{
+            const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions());
+            if (!res.ok) throw new Error('Failed to load computers');
+            const page = await res.json();
+            (page.content || []).forEach(c => {
+                // ensure required fields
+                state.computers[c.id] = Object.assign({}, c, { branchPrice: (c.branch && c.branch.pricePerHour ? c.branch.pricePerHour : (c.branchPrice || '-')), status: c.status || 'AVAILABLE' });
+            });
+            renderGrid();
+        }catch(err){
+            console.error('fetchComputers', err);
+        }
+    }
 
-      document.getElementById('refresh').addEventListener('click', fetchComputers);
+    // STOMP websocket subscription
+    const host = window.location.hostname;
+    const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl = `${wsProtocol}://${host}:${port}/ws`;
 
-      // user area update & logout redirect handled similarly to previous templates
-      async function updateUserArea(){ const token = localStorage.getItem('jwt_token'); const userArea = document.getElementById('user-area'); if(!token){ try{ const res = await fetch('/api/auth/me', {credentials:'same-origin'}); if(!res.ok) throw new Error('unauth'); const json = await res.json(); userArea.innerHTML = `Signed in as <strong>${json.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-primary ms-2">Logout</button>`; document.getElementById('logout').addEventListener('click', async ()=>{ try{ await fetch('/api/auth/logout',{method:'POST', credentials:'same-origin'}); }catch(e){} document.cookie='JWT=; Path=/; Max-Age=0'; localStorage.removeItem('jwt_token'); window.location.href='/login'; }); }catch(e){ userArea.innerHTML = `<a href="/login" class="btn btn-outline-primary">Login</a>`; } return; } try{ const res = await fetch('/api/auth/me',{headers:{'Authorization':'Bearer '+token}}); if(!res.ok) throw new Error('unauth'); const json=await res.json(); userArea.innerHTML = `Signed in as <strong>${json.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-primary ms-2">Logout</button>`; document.getElementById('logout').addEventListener('click', async ()=>{ try{ await fetch('/api/auth/logout',{method:'POST', credentials:'same-origin'}); }catch(e){} localStorage.removeItem('jwt_token'); window.location.href='/login'; }); }catch(e){ localStorage.removeItem('jwt_token'); userArea.innerHTML = `<a href="/login" class="btn btn-outline-primary">Login</a>`; } }
+    const stompClient = new StompJs.Client({
+        brokerURL: wsUrl,
+        onConnect: () => {
+            console.log('STOMP connected');
+            stompClient.subscribe('/topic/sessions', msg => {
+                try{
+                    const payload = JSON.parse(msg.body);
+                    if (payload && payload.id) {
+                        state.sessions[payload.id] = { elapsed: payload.elapsed, totalCost: payload.totalCost };
+                        if (state.computers[payload.id]) state.computers[payload.id].status = 'IN_USE';
+                    } else if (payload && payload.macAddress) {
+                        const comp = Object.values(state.computers).find(c => c.macAddress === payload.macAddress);
+                        if (comp) {
+                            state.sessions[comp.id] = { elapsed: payload.elapsed, totalCost: payload.totalCost };
+                            comp.status = 'IN_USE';
+                        }
+                    }
+                    renderGrid();
+                }catch(e){ console.error('stomp msg', e); }
+            });
+        },
+        onStompError: (frame) => { console.error('STOMP error', frame); },
+        debug: () => {}
+    });
+    stompClient.activate();
 
-      updateUserArea(); fetchComputers();
-    </script>
-  </body>
+    // actions: delegated events
+    document.addEventListener('click', async (e) => {
+        const t = e.target;
+        if (t.matches('.start-btn')){
+            const id = t.dataset.id;
+            const price = prompt('Price per hour (optional)');
+            const body = price ? JSON.stringify({ pricePerHour: parseFloat(price) }) : JSON.stringify({});
+            try{
+                const r = await fetch(`/sessions/${id}/start`, authOptions({ method: 'POST', body }));
+                if (!r.ok) { const txt = await r.text(); alert('Start failed: '+txt); return; }
+                const dto = await r.json();
+                state.computers[id].status = 'IN_USE';
+                if (dto && dto.totalCost) state.sessions[id] = { elapsed: 0, totalCost: dto.totalCost };
+                renderGrid();
+            }catch(err){ console.error(err); alert('Start error'); }
+        }
+        if (t.matches('.stop-btn')){
+            const id = t.dataset.id;
+            try{
+                const r = await fetch(`/sessions/${id}/stop-running`, authOptions({ method: 'POST' }));
+                if (!r.ok) { const txt = await r.text(); alert('Stop failed: '+txt); return; }
+                const dto = await r.json();
+                state.computers[id].status = 'AVAILABLE';
+                state.sessions[id] = { elapsed: 0, totalCost: dto.totalCost || '-' };
+                renderGrid();
+            }catch(err){ console.error(err); alert('Stop error'); }
+        }
+        if (t.matches('.terminate-btn')){
+            const id = t.dataset.id;
+            const name = t.dataset.name || '';
+            if (!confirm('Terminate running session on '+name+'?')) return;
+            try{
+                const r = await fetch(`/sessions/${id}/terminate-now`, authOptions({ method: 'POST' }));
+                if (!r.ok) { const txt = await r.text(); alert('Terminate failed: '+txt); return; }
+                alert('Terminated');
+                state.computers[id].status = 'AVAILABLE';
+                delete state.sessions[id];
+                renderGrid();
+            }catch(err){ console.error(err); alert('Terminate error'); }
+        }
+    });
+
+
+    // user area + logout: redirect to /login after logout
+    async function updateUserArea(){
+        const ua = document.getElementById('user-area');
+        const token = localStorage.getItem('jwt_token');
+        if (!token){
+            try{
+                const res = await fetch('/api/auth/me', { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('unauth');
+                const j = await res.json();
+                ua.innerHTML = `Signed in as <strong>${j.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-light ms-2">Logout</button>`;
+                document.getElementById('logout').addEventListener('click', async ()=>{
+                    try{ await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); }catch(e){}
+                    document.cookie = 'JWT=; Path=/; Max-Age=0'; localStorage.removeItem('jwt_token'); window.location.href = '/login';
+                });
+                return;
+            }catch(e){ ua.innerHTML = `<a href="/login" class="btn btn-sm btn-outline-light">Login</a>`; return; }
+        }
+        try{
+            const res = await fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer '+token } });
+            if (!res.ok) throw new Error('unauth');
+            const j = await res.json();
+            ua.innerHTML = `Signed in as <strong>${j.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-light ms-2">Logout</button>`;
+            document.getElementById('logout').addEventListener('click', async ()=>{
+                try{ await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); }catch(e){}
+                localStorage.removeItem('jwt_token'); window.location.href = '/login';
+            });
+        }catch(e){ localStorage.removeItem('jwt_token'); ua.innerHTML = `<a href="/login" class="btn btn-sm btn-outline-light">Login</a>`; }
+    }
+
+    // Users management JS: load/create/edit/delete inside dashboard offcanvas
+    async function loadUsersIntoOffcanvas(){
+        const tbody = document.querySelector('#users-list-table tbody');
+        tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+        try{
+            const res = await fetch('/api/v1/admin/users', authOptions());
+            if(!res.ok){ tbody.innerHTML = '<tr><td colspan="5">Unable to load users</td></tr>'; return; }
+            const list = await res.json();
+            tbody.innerHTML = '';
+            list.forEach(u=>{
+                const tr = document.createElement('tr');
+                const roles = (u.authorities||[]).map(a=>a.name).join(',');
+                tr.innerHTML = `<td>${u.id}</td><td>${escapeHtml(u.username)}</td><td>${escapeHtml(u.name||'')}</td><td>${escapeHtml(roles)}</td><td><button class="btn btn-sm btn-outline-primary edit-user" data-id="${u.id}">Edit</button> <button class="btn btn-sm btn-outline-danger delete-user" data-id="${u.id}">Delete</button></td>`;
+                tbody.appendChild(tr);
+            });
+        }catch(e){ console.error(e); tbody.innerHTML = '<tr><td colspan="5">Error loading users</td></tr>'; }
+    }
+
+    // create user
+    document.addEventListener('click', async (e)=>{
+        if(e.target && e.target.id==='create-user'){
+            const username = document.getElementById('new-username').value;
+            const name = document.getElementById('new-name').value;
+            const password = document.getElementById('new-password').value;
+            const roles = (document.getElementById('new-roles').value||'').split(',').map(s=>s.trim()).filter(s=>s);
+            try{
+                const res = await fetch('/api/v1/admin/users', { method: 'POST', headers: authOptions().headers, body: JSON.stringify({username,name,password,roles}) });
+                if(!res.ok){ alert('Create failed: '+await res.text()); return; }
+                document.getElementById('new-username').value=''; document.getElementById('new-name').value=''; document.getElementById('new-password').value=''; document.getElementById('new-roles').value='';
+                await loadUsersIntoOffcanvas();
+            }catch(err){ console.error(err); alert('Create error'); }
+        }
+
+        if(e.target && e.target.classList.contains('edit-user')){
+            const id = e.target.dataset.id;
+            // fetch users list and find user
+            try{
+                const res = await fetch('/api/v1/admin/users', authOptions());
+                const list = await res.json();
+                const u = list.find(x=>String(x.id)===String(id));
+                if(!u){ alert('User not found'); return; }
+                document.getElementById('edit-id').value = u.id;
+                document.getElementById('edit-name').value = u.name || '';
+                document.getElementById('edit-password').value = '';
+                document.getElementById('edit-roles').value = (u.authorities||[]).map(a=>a.name).join(',');
+                const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+                modal.show();
+            }catch(err){ console.error(err); alert('Error fetching user'); }
+        }
+
+        if(e.target && e.target.classList.contains('delete-user')){
+            const id = e.target.dataset.id;
+            if(!confirm('Delete user '+id+'?')) return;
+            try{
+                const res = await fetch('/api/v1/admin/users/'+id, { method: 'DELETE', headers: authOptions().headers });
+                if(!res.ok){ alert('Delete failed'); return; }
+                await loadUsersIntoOffcanvas();
+            }catch(err){ console.error(err); alert('Delete error'); }
+        }
+    });
+
+    // save edit
+    document.getElementById('save-edit').addEventListener('click', async ()=>{
+        const id = document.getElementById('edit-id').value;
+        const name = document.getElementById('edit-name').value;
+        const password = document.getElementById('edit-password').value;
+        const roles = (document.getElementById('edit-roles').value||'').split(',').map(s=>s.trim()).filter(s=>s);
+        try{
+            const res = await fetch('/api/v1/admin/users/'+id, { method: 'PUT', headers: authOptions().headers, body: JSON.stringify({name,password,roles}) });
+            if(!res.ok){ alert('Update failed: '+await res.text()); return; }
+            bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+            await loadUsersIntoOffcanvas();
+        }catch(err){ console.error(err); alert('Update error'); }
+    });
+
+    // open users offcanvas
+    document.getElementById('open-users').addEventListener('click', async ()=>{
+        const offcanvasEl = document.getElementById('usersOffcanvas');
+        const off = new bootstrap.Offcanvas(offcanvasEl);
+        await loadUsersIntoOffcanvas();
+        off.show();
+    });
+
+    // init
+    updateUserArea(); fetchComputers();
+</script>
+</body>
 </html>
-

@@ -8,22 +8,22 @@
 
  :: Spring Boot ::                (v4.0.0)
 
-2025-12-18T09:28:58.180+03:00  INFO 19134 --- [internet-cafe] [           main] c.m.i.InternetCafeApplication            : Starting InternetCafeApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 19134 (/home/mtesfa/Downloads/internet-cafe/target/internet-cafe-0.0.1-SNAPSHOT.jar started by mtesfa in /home/mtesfa/Downloads/internet-cafe)
-2025-12-18T09:28:58.185+03:00  INFO 19134 --- [internet-cafe] [           main] c.m.i.InternetCafeApplication            : No active profile set, falling back to 1 default profile: "default"
-2025-12-18T09:28:59.151+03:00  INFO 19134 --- [internet-cafe] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-18T09:28:59.331+03:00  INFO 19134 --- [internet-cafe] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 173 ms. Found 5 JPA repository interfaces.
-2025-12-18T09:29:00.112+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8052 (http)
-2025-12-18T09:29:00.132+03:00  INFO 19134 --- [internet-cafe] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-12-18T09:29:00.132+03:00  INFO 19134 --- [internet-cafe] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.14]
-2025-12-18T09:29:00.181+03:00  INFO 19134 --- [internet-cafe] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1937 ms
-2025-12-18T09:29:00.345+03:00  INFO 19134 --- [internet-cafe] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-18T09:29:00.387+03:00  INFO 19134 --- [internet-cafe] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 7.1.8.Final
-2025-12-18T09:29:00.715+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-18T09:29:00.801+03:00  INFO 19134 --- [internet-cafe] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-18T09:29:01.068+03:00  INFO 19134 --- [internet-cafe] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 5c3bab90-1b77-4ec0-b571-a6240ebdf18d
-2025-12-18T09:29:01.069+03:00  INFO 19134 --- [internet-cafe] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-18T09:29:01.108+03:00  WARN 19134 --- [internet-cafe] [           main] org.hibernate.orm.deprecation            : HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-12-18T09:29:01.134+03:00  INFO 19134 --- [internet-cafe] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-18T12:03:40.320+03:00  INFO 43958 --- [internet-cafe] [           main] c.m.i.InternetCafeApplication            : Starting InternetCafeApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 43958 (/home/mtesfa/Downloads/internet-cafe/target/internet-cafe-0.0.1-SNAPSHOT.jar started by mtesfa in /home/mtesfa/Downloads/internet-cafe)
+2025-12-18T12:03:40.323+03:00  INFO 43958 --- [internet-cafe] [           main] c.m.i.InternetCafeApplication            : No active profile set, falling back to 1 default profile: "default"
+2025-12-18T12:03:41.124+03:00  INFO 43958 --- [internet-cafe] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-18T12:03:41.487+03:00  INFO 43958 --- [internet-cafe] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 355 ms. Found 5 JPA repository interfaces.
+2025-12-18T12:03:43.335+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8052 (http)
+2025-12-18T12:03:43.364+03:00  INFO 43958 --- [internet-cafe] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-18T12:03:43.365+03:00  INFO 43958 --- [internet-cafe] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.14]
+2025-12-18T12:03:43.424+03:00  INFO 43958 --- [internet-cafe] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3059 ms
+2025-12-18T12:03:43.697+03:00  INFO 43958 --- [internet-cafe] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-18T12:03:43.748+03:00  INFO 43958 --- [internet-cafe] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 7.1.8.Final
+2025-12-18T12:03:44.046+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-18T12:03:44.119+03:00  INFO 43958 --- [internet-cafe] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-18T12:03:44.386+03:00  INFO 43958 --- [internet-cafe] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: d190cae4-4641-4f2a-b181-cdef1922c095
+2025-12-18T12:03:44.388+03:00  INFO 43958 --- [internet-cafe] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-18T12:03:44.416+03:00  WARN 43958 --- [internet-cafe] [           main] org.hibernate.orm.deprecation            : HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-18T12:03:44.432+03:00  INFO 43958 --- [internet-cafe] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:sqlserver://localhost:1433;concatNullYieldsNull=ON;quotedIdentifier=ON;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;vectorTypeSupport=v1;cacheBulkCopyMetadata=false;bulkCopyForBatchInsertAllowEncryptedValueModifications=false;bulkCopyForBatchInsertTableLock=false;bulkCopyForBatchInsertKeepNulls=false;bulkCopyForBatchInsertKeepIdentity=false;bulkCopyForBatchInsertFireTriggers=false;bulkCopyForBatchInsertCheckConstraints=false;bulkCopyForBatchInsertBatchSize=0;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=false;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=false;disableStatementPooling=true;databaseName=shareholder_attendance;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite;]
 	Database driver: Microsoft JDBC Driver 13.2 for SQL Server
 	Database dialect: SQLServerDialect
@@ -35,36 +35,415 @@
 	Pool: DatasourceConnectionProviderImpl
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-12-18T09:29:02.230+03:00  INFO 19134 --- [internet-cafe] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-18T09:29:02.415+03:00  INFO 19134 --- [internet-cafe] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-18T09:29:02.476+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-18T09:29:03.571+03:00  INFO 19134 --- [internet-cafe] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImp
+2025-12-18T12:03:45.407+03:00  INFO 43958 --- [internet-cafe] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-18T12:03:45.557+03:00  INFO 43958 --- [internet-cafe] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-18T12:03:45.616+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
 >>> Initializing Ubuntu D-Bus Event Listener...
-2025-12-18T09:29:03.809+03:00  WARN 19134 --- [internet-cafe] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-12-18T09:29:04.546+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
-2025-12-18T09:29:04.547+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@22d7e121]]
-2025-12-18T09:29:04.548+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
-2025-12-18T09:29:04.587+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
-2025-12-18T09:29:04.588+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@22d7e121]]
-2025-12-18T09:29:04.588+03:00  INFO 19134 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
-2025-12-18T09:29:04.638+03:00  WARN 19134 --- [internet-cafe] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
-2025-12-18T09:29:04.646+03:00  INFO 19134 --- [internet-cafe] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-12-18T09:29:04.652+03:00  INFO 19134 --- [internet-cafe] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-12-18T09:29:04.655+03:00  INFO 19134 --- [internet-cafe] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-12-18T09:29:04.673+03:00  INFO 19134 --- [internet-cafe] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2025-12-18T12:03:46.697+03:00  INFO 43958 --- [internet-cafe] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImp
+2025-12-18T12:03:46.816+03:00  WARN 43958 --- [internet-cafe] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-12-18T12:03:47.053+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page template: index
+2025-12-18T12:03:47.527+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2025-12-18T12:03:47.527+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7eb03024]]
+2025-12-18T12:03:47.528+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2025-12-18T12:03:47.589+03:00  INFO 43958 --- [internet-cafe] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8052 (http) with context path '/'
+2025-12-18T12:03:47.601+03:00  INFO 43958 --- [internet-cafe] [           main] c.m.i.InternetCafeApplication            : Started InternetCafeApplication in 7.617 seconds (process running for 8.107)
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+>>> Agent Application Started.
+>>> [OS EVENT] Lock detected.
+NetworkUtil.machineName()=mtesfa-HP-250-15-6-inch-G9-Notebook-PC
+2025-12-18T12:03:48.304+03:00  INFO 43958 --- [internet-cafe] [nio-8052-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-18T12:03:48.305+03:00  INFO 43958 --- [internet-cafe] [nio-8052-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-18T12:03:48.306+03:00  INFO 43958 --- [internet-cafe] [nio-8052-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+!!! Registration failed: 401 Unauthorized from POST http://localhost:8052/api/v1/computers
+>>> Termination failed: 401 Unauthorized from POST http://localhost:8052/sessions/terminate
+>>> [OS EVENT] Lock detected.
+NetworkUtil.machineName()=mtesfa-HP-250-15-6-inch-G9-Notebook-PC
+>>> Termination failed: 401 Unauthorized from POST http://localhost:8052/sessions/terminate
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+>>> [OS EVENT] Unlock detected. Restarting session...
+>>> [OS EVENT] Unlock detected. Restarting session...
+>>> WebSocket Online.
+>>> WebSocket Online.
+2025-12-18T12:03:51.934+03:00 ERROR 43958 --- [internet-cafe] [or-http-epoll-9] reactor.core.publisher.Operators         : Operator called default onErrorDropped
 
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2025-12-18T09:29:04.687+03:00 ERROR 19134 --- [internet-cafe] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+reactor.core.Exceptions$ErrorCallbackNotImplemented: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+Caused by: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+	at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 401 UNAUTHORIZED from POST http://localhost:8052/api/v1/computers/heartbeat [DefaultWebClient]
+Original Stack Trace:
+		at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at org.springframework.web.reactive.function.client.DefaultClientResponse.lambda$createException$1(DefaultClientResponse.java:214) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxOnErrorReturn$ReturnSubscriber.onNext(FluxOnErrorReturn.java:159) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onNext(FluxDefaultIfEmpty.java:123) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:130) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onNext(FluxContextWrite.java:109) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onNext(FluxMapFuseable.java:300) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onNext(FluxFilterFuseable.java:338) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2093) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:263) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:419) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:465) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:519) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:924) ~[reactor-netty-http-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:115) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:170) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:48) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:91) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:354) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:794) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:482) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:317) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:515) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:460) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1193) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
 
-***************************
-APPLICATION FAILED TO START
-***************************
+2025-12-18T12:03:51.934+03:00 ERROR 43958 --- [internet-cafe] [or-http-epoll-5] reactor.core.publisher.Operators         : Operator called default onErrorDropped
 
-Description:
+reactor.core.Exceptions$ErrorCallbackNotImplemented: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+Caused by: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+	at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 401 UNAUTHORIZED from POST http://localhost:8052/api/v1/computers/heartbeat [DefaultWebClient]
+Original Stack Trace:
+		at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at org.springframework.web.reactive.function.client.DefaultClientResponse.lambda$createException$1(DefaultClientResponse.java:214) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxOnErrorReturn$ReturnSubscriber.onNext(FluxOnErrorReturn.java:159) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onNext(FluxDefaultIfEmpty.java:123) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:130) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onNext(FluxContextWrite.java:109) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onNext(FluxMapFuseable.java:300) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onNext(FluxFilterFuseable.java:338) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2093) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:263) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:419) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:465) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:519) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:924) ~[reactor-netty-http-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:115) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:170) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:48) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:91) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:354) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:794) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:482) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:317) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:515) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:460) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1193) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
 
-Web server failed to start. Port 8052 was already in use.
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+!!! Registration failed: 401 Unauthorized from POST http://localhost:8052/api/v1/computers
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select c1_0.id,c1_0.branch_id,c1_0.ip_address,c1_0.last_heartbeat,c1_0.mac_address,c1_0.name,c1_0.os_type,c1_0.status from computers c1_0
+Hibernate: select b1_0.id,b1_0.city,b1_0.created_at,b1_0.name,b1_0.price_per_hour from branches b1_0 where b1_0.id=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select c1_0.id,c1_0.branch_id,c1_0.ip_address,c1_0.last_heartbeat,c1_0.mac_address,c1_0.name,c1_0.os_type,c1_0.status from computers c1_0
+Hibernate: select b1_0.id,b1_0.city,b1_0.created_at,b1_0.name,b1_0.price_per_hour from branches b1_0 where b1_0.id=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+!!! Registration failed: 401 Unauthorized from POST http://localhost:8052/api/v1/computers
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select u1_0.id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.credentials_non_expired,u1_0.enabled,u1_0.name,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select a1_0.user_id,a1_1.id,a1_1.name from users_authorities a1_0 join authority a1_1 on a1_1.id=a1_0.authorities_id where a1_0.user_id=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+2025-12-18T12:04:01.939+03:00 ERROR 43958 --- [internet-cafe] [or-http-epoll-5] reactor.core.publisher.Operators         : Operator called default onErrorDropped
 
-Action:
+reactor.core.Exceptions$ErrorCallbackNotImplemented: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+Caused by: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+	at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 401 UNAUTHORIZED from POST http://localhost:8052/api/v1/computers/heartbeat [DefaultWebClient]
+Original Stack Trace:
+		at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at org.springframework.web.reactive.function.client.DefaultClientResponse.lambda$createException$1(DefaultClientResponse.java:214) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxOnErrorReturn$ReturnSubscriber.onNext(FluxOnErrorReturn.java:159) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onNext(FluxDefaultIfEmpty.java:123) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:130) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onNext(FluxContextWrite.java:109) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onNext(FluxMapFuseable.java:300) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onNext(FluxFilterFuseable.java:338) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2093) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:263) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:419) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:465) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:519) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:924) ~[reactor-netty-http-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:115) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:170) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:48) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:91) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:354) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:794) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:482) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:317) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:515) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:460) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1193) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
 
-Identify and stop the process that's listening on port 8052 or configure this application to listen on another port.
+2025-12-18T12:04:01.941+03:00 ERROR 43958 --- [internet-cafe] [or-http-epoll-9] reactor.core.publisher.Operators         : Operator called default onErrorDropped
 
+reactor.core.Exceptions$ErrorCallbackNotImplemented: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+Caused by: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+	at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 401 UNAUTHORIZED from POST http://localhost:8052/api/v1/computers/heartbeat [DefaultWebClient]
+Original Stack Trace:
+		at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at org.springframework.web.reactive.function.client.DefaultClientResponse.lambda$createException$1(DefaultClientResponse.java:214) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxOnErrorReturn$ReturnSubscriber.onNext(FluxOnErrorReturn.java:159) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onNext(FluxDefaultIfEmpty.java:123) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:130) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onNext(FluxContextWrite.java:109) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onNext(FluxMapFuseable.java:300) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onNext(FluxFilterFuseable.java:338) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2093) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:263) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:419) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:465) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:519) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:924) ~[reactor-netty-http-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:115) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:170) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:48) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:91) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:354) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:794) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:482) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:317) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:515) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:460) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1193) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+!!! Registration failed: 401 Unauthorized from POST http://localhost:8052/api/v1/computers
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+!!! Registration failed: 401 Unauthorized from POST http://localhost:8052/api/v1/computers
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+2025-12-18T12:04:11.931+03:00 ERROR 43958 --- [internet-cafe] [or-http-epoll-5] reactor.core.publisher.Operators         : Operator called default onErrorDropped
+
+reactor.core.Exceptions$ErrorCallbackNotImplemented: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+Caused by: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+	at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 401 UNAUTHORIZED from POST http://localhost:8052/api/v1/computers/heartbeat [DefaultWebClient]
+Original Stack Trace:
+		at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at org.springframework.web.reactive.function.client.DefaultClientResponse.lambda$createException$1(DefaultClientResponse.java:214) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxOnErrorReturn$ReturnSubscriber.onNext(FluxOnErrorReturn.java:159) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onNext(FluxDefaultIfEmpty.java:123) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:130) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onNext(FluxContextWrite.java:109) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onNext(FluxMapFuseable.java:300) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onNext(FluxFilterFuseable.java:338) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2093) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:263) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:419) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:465) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:519) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:924) ~[reactor-netty-http-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:115) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:170) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:48) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:91) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:354) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:794) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:482) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:317) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:515) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:460) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1193) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2025-12-18T12:04:11.931+03:00 ERROR 43958 --- [internet-cafe] [or-http-epoll-9] reactor.core.publisher.Operators         : Operator called default onErrorDropped
+
+reactor.core.Exceptions$ErrorCallbackNotImplemented: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+Caused by: org.springframework.web.reactive.function.client.WebClientResponseException$Unauthorized: 401 Unauthorized from POST http://localhost:8052/api/v1/computers/heartbeat
+	at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 401 UNAUTHORIZED from POST http://localhost:8052/api/v1/computers/heartbeat [DefaultWebClient]
+Original Stack Trace:
+		at org.springframework.web.reactive.function.client.WebClientResponseException.create(WebClientResponseException.java:308) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at org.springframework.web.reactive.function.client.DefaultClientResponse.lambda$createException$1(DefaultClientResponse.java:214) ~[spring-webflux-7.0.1.jar!/:7.0.1]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxOnErrorReturn$ReturnSubscriber.onNext(FluxOnErrorReturn.java:159) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onNext(FluxDefaultIfEmpty.java:123) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:130) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onNext(FluxContextWrite.java:109) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onNext(FluxMapFuseable.java:300) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onNext(FluxFilterFuseable.java:338) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2093) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:263) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.8.0.jar!/:3.8.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:419) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:465) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:519) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:924) ~[reactor-netty-http-1.3.0.jar!/:1.3.0]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:115) ~[reactor-netty-core-1.3.0.jar!/:1.3.0]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:170) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.http.HttpContentDecoder.decode(HttpContentDecoder.java:48) ~[netty-codec-http-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:91) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:356) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-base-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:354) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:794) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:482) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:317) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:515) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:460) ~[netty-transport-classes-epoll-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196) ~[netty-transport-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1193) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.2.7.Final.jar!/:4.2.7.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+!!! Registration failed: 401 Unauthorized from POST http://localhost:8052/api/v1/computers
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+!!! Registration failed: 401 Unauthorized from POST http://localhost:8052/api/v1/computers
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+Hibernate: select s1_0.id,s1_0.computer_id,s1_0.end_time,s1_0.price_per_hour,s1_0.start_time,s1_0.status,s1_0.total_cost,s1_0.total_minutes from sessions s1_0 where s1_0.status=?
+2025-12-18T12:04:19.881+03:00  INFO 43958 --- [internet-cafe] [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2025-12-18T12:04:19.883+03:00  INFO 43958 --- [internet-cafe] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+>>> WS Error: Connection closed
+>>> WS Error: Connection closed
+2025-12-18T12:04:19.889+03:00  INFO 43958 --- [internet-cafe] [ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2025-12-18T12:04:19.890+03:00  INFO 43958 --- [internet-cafe] [ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7eb03024]]
+2025-12-18T12:04:19.890+03:00  INFO 43958 --- [internet-cafe] [ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2025-12-18T12:04:21.914+03:00  INFO 43958 --- [internet-cafe] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-12-18T12:04:21.917+03:00  INFO 43958 --- [internet-cafe] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-12-18T12:04:21.918+03:00  INFO 43958 --- [internet-cafe] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -1,0 +1,40 @@
+<div class="glass p-3">
+    <h5 class="mb-3">Dashboard</h5>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="glass p-3">Total Computers: <strong id="stat-total">-</strong></div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass p-3">Running: <strong id="stat-running">-</strong></div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass p-3">Revenue: <strong id="stat-revenue">-</strong></div>
+        </div>
+    </div>
+
+    <div id="computers-grid" class="row g-3"></div>
+</div>
+
+<script>
+    async function initDashboard(){
+        const res = await fetch('/api/v1/computers?page=0&size=1000');
+        const page = await res.json();
+
+        document.getElementById('stat-total').innerText = page.content.length;
+
+        const grid = document.getElementById('computers-grid');
+        grid.innerHTML = '';
+
+        page.content.forEach(c=>{
+            grid.innerHTML += `
+      <div class="col-md-4">
+        <div class="glass p-3">
+          <strong>${c.name}</strong><br>
+          <small>${c.macAddress}</small>
+        </div>
+      </div>`;
+        });
+    }
+</script>
+

@@ -18,7 +18,7 @@ public class DashboardController {
     public String dashboard(Model model) {
         // provide initial list of computers to render
         model.addAttribute("computers", computerService.list(null, org.springframework.data.domain.Pageable.unpaged()).getContent());
-        return "dashboard";
+        return "index";
     }
 }
 

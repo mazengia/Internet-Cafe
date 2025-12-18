@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Internet Cafe • Control Center</title>
+
+    <!-- Modern font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/static/images/icon.v1.png" />
+    <style>
+        :root{
+            --bg-100: #0b1020;
+            --card: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --accent: #6d28d9; /* indigo-700 */
+            --muted: #9ca3af;
+        }
+        html,body{ height:100%; }
+        body{
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            margin:0; background: linear-gradient(180deg,var(--bg-100), #081021 60%); color:#eef2ff;
+            -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+        }
+
+        /* Top navbar */
+        .topbar{ background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-bottom:1px solid var(--glass-border); }
+        .brand { display:flex; align-items:center; gap:.75rem; }
+        .brand img{ width:36px; height:36px; border-radius:8px; }
+
+        /* Offcanvas sidebar styles */
+        .sidebar-pane{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); min-height:100vh; border-right:1px solid var(--glass-border); }
+        .nav-link{ color:var(--muted); padding:.6rem .75rem; border-radius:.6rem; transition: background .15s ease, transform .08s ease; }
+        .nav-link:hover, .nav-link.active{ background: rgba(109,40,217,0.12); color:#fff; transform: translateY(-1px); }
+        .nav-link:focus{ outline: 3px solid rgba(109,40,217,0.16); }
+
+        /* Content cards */
+        .card-soft{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid var(--glass-border); border-radius:12px; }
+        .glass{ border-radius:12px; padding:12px; }
+
+        /* subtle fade-in for fragments */
+        .fade-in{ animation: fadeIn .32s ease both; }
+        @keyframes fadeIn{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform: translateY(0);} }
+
+        /* responsive utilities */
+        @media (max-width: 991px){
+            .desktop-sidebar { display:none; }
+        }
+        @media (min-width: 992px){
+            .mobile-toggler { display:none; }
+        }
+
+        /* table adjustments */
+        .table thead th{ color: #c7d2fe; border-bottom:1px solid rgba(255,255,255,0.04); }
+        .small-muted{ color:var(--muted); }
+
+        /* content spacing */
+        #app-content > * { margin-bottom: 1rem; }
+    </style>
+</head>
+
+<body>
+
+<nav class="topbar navbar navbar-expand-lg py-2">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-link text-light mobile-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas"><i class="bi bi-list" style="font-size:1.25rem"></i></button>
+            <div class="brand ms-2">
+                <img src="/images/icon.v1.png" alt="logo">
+                <div>
+                    <div class="h6 mb-0">Internet Cafe</div>
+                    <small class="small-muted">Control Center</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto gap-2">
+            <div id="top-search" class="d-none d-md-block me-2">
+                <input class="form-control form-control-sm bg-dark text-light border-0" placeholder="Search computers..." style="width:240px">
+            </div>
+            <div id="user-area"></div>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row g-3">
+        <!-- Desktop sidebar -->
+        <aside class="col-12 col-lg-2 desktop-sidebar">
+            <div class="sidebar-pane p-3 h-100">
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#" data-page="/dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="#" id="users-open-link" data-page="/users.html"><i class="bi bi-people me-2"></i>Users</a>
+                    <a class="nav-link" href="#sessions"><i class="bi bi-clock-history me-2"></i>Sessions</a>
+                    <a class="nav-link" href="#settings"><i class="bi bi-gear me-2"></i>Settings</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="col-12 col-lg-10 py-3">
+            <div id="app-content"></div>
+        </main>
+    </div>
+</div>
+
+<!-- Mobile offcanvas sidebar -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Menu</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <div class="sidebar-pane p-3">
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#" data-page="/dashboard.html">Dashboard</a>
+            <a class="nav-link" href="#" data-page="/users.html">Users</a>
+            <a class="nav-link" href="#sessions">Sessions</a>
+            <a class="nav-link" href="#settings">Settings</a>
+        </nav>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const contentEl = document.getElementById('app-content');
+
+    /* LOAD PAGE: fetch HTML fragment, parse, inject body children and run inline scripts */
+    async function loadPage(page){
+        const res = await fetch(page, { credentials: 'same-origin' });
+        if (!res.ok) {
+            contentEl.innerHTML = `<div class="p-4 bg-white text-dark rounded">Error loading ${page}: ${res.status} ${res.statusText}</div>`;
+            return;
+        }
+        const text = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+
+        // inject body children into app-content
+        contentEl.innerHTML = '';
+        Array.from(doc.body.childNodes).forEach(node => {
+            const imported = document.importNode(node, true);
+            // add fade-in to top-level elements for a smooth transition
+            if (imported.nodeType===1) imported.classList.add('fade-in');
+            contentEl.appendChild(imported);
+        });
+
+        // execute scripts from fragment (inline and external)
+        const scripts = doc.querySelectorAll('script');
+        for (const s of scripts){
+            const newScript = document.createElement('script');
+            if (s.src){
+                newScript.src = s.src; document.body.appendChild(newScript);
+            } else {
+                newScript.textContent = s.textContent; document.body.appendChild(newScript);
+            }
+        }
+
+        // set focus for accessibility
+        const firstFocusable = contentEl.querySelector('input,button,a,select,textarea');
+        if(firstFocusable) firstFocusable.focus();
+    }
+
+    // wire sidebar links
+    function wireNavLinks(){
+        document.querySelectorAll('[data-page]').forEach(link=>{
+            link.addEventListener('click', e=>{
+                e.preventDefault();
+                document.querySelectorAll('[data-page]').forEach(l=>l.classList.remove('active'));
+                link.classList.add('active');
+                loadPage(link.dataset.page);
+                // hide offcanvas on mobile when a menu item is chosen
+                const off = bootstrap.Offcanvas.getInstance(document.getElementById('sidebarOffcanvas'));
+                if (off) off.hide();
+            });
+        });
+    }
+
+    // load default
+    document.addEventListener('DOMContentLoaded', ()=>{
+        wireNavLinks();
+        loadPage('/dashboard.html');
+    });
+</script>
+</body>
+</html>
