@@ -74,6 +74,10 @@ function initDashboard(){
     const mac = escapeHtml(c.macAddress||'');
     const price = c.branchPrice || '-';
     const statusBadge = (c.status==='IN_USE') ? `<span class="pill success">IN USE</span>` : `<span class="pill muted">AVAILABLE</span>`;
+    // show/hide buttons by status: start only when NOT IN_USE, stop/terminate only when IN_USE
+    const startClass = (c.status==='IN_USE') ? ' d-none' : '';
+    const stopClass = (c.status==='IN_USE') ? '' : ' d-none';
+    const terminateClass = (c.status==='IN_USE') ? '' : ' d-none';
     return `\
       <div class="col-12 col-md-6 col-lg-4">\
         <div class="glass p-3 computer h-100">\
@@ -90,9 +94,9 @@ function initDashboard(){
             <div><div class="small text-muted">Total</div><div>${total}</div></div>\
           </div>\
           <div class="d-flex gap-2">\
-            <button class="btn btn-sm btn-success start-btn" data-id="${c.id}"><i class="bi bi-play-fill"></i> Start</button>\
-            <button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}"><i class="bi bi-stop-fill"></i> Stop</button>\
-            <button class="btn btn-sm btn-danger terminate-btn" data-id="${c.id}" data-name="${name}"><i class="bi bi-x-lg"></i> Terminate</button>\
+            <button class="btn btn-sm btn-success start-btn${startClass}" data-id="${c.id}"><i class="bi bi-play-fill"></i> Start</button>\
+            <button class="btn btn-sm btn-warning stop-btn${stopClass}" data-id="${c.id}"><i class="bi bi-stop-fill"></i> Stop</button>\
+            <button class="btn btn-sm btn-danger terminate-btn${terminateClass}" data-id="${c.id}" data-name="${name}"><i class="bi bi-x-lg"></i> Terminate</button>\
           </div>\
         </div>\
       </div>`;

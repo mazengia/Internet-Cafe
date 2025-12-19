@@ -4,10 +4,19 @@ spring:
 
 
   datasource:
+#    local
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://localhost:1433;encrypt=false;databaseName=shareholder_attendance
     username: sa
     password: P@ss1234
+#live
+
+
+#    url: jdbc:sqlserver://localhost:1433;encrypt=false;databaseName=internkv_internet_cafe_db
+#    username: internkv_internet_cafe_db
+#    password: xyt79nf2u6xBS7sU5UQk
+
+
 
   jpa:
     database-platform: org.hibernate.dialect.SQLServerDialect
