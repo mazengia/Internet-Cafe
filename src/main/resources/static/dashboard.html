@@ -193,7 +193,30 @@ function initDashboard(){
   }
 
   // init
-  updateUserArea(); fetchComputers(); startStomp();
+  updateUserArea(); fetchComputers(); startStomp(); startAutoRefresh();
+
+  // Focus computer if requested via localStorage (e.g., from sessions page)
+  function focusComputerById(id){
+    if(!id) return;
+    // wait a tick for DOM to render
+    setTimeout(()=>{
+      const cardBtn = document.querySelector(`[data-id='${id}']`);
+      if(cardBtn){
+        const card = cardBtn.closest('.computer');
+        if(card){
+          card.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.35)';
+          card.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(()=>{ card.style.boxShadow=''; }, 4000);
+        }
+      }
+    }, 500);
+  }
+
+  // run focus if set from sessions page
+  try{
+    const focusId = localStorage.getItem('focus_computer');
+    if(focusId){ focusComputerById(focusId); localStorage.removeItem('focus_computer'); }
+  }catch(e){}
 }
 
 // when fragment loaded inline, run initDashboard if available

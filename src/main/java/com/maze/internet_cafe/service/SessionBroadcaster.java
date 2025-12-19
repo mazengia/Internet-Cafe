@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -23,16 +24,21 @@ public class SessionBroadcaster {
         sessionRepo.findByStatus(SessionStatus.RUNNING).forEach(s -> {
             long sec = ChronoUnit.SECONDS.between(s.getStartTime(), LocalDateTime.now());
 
-            // Construct payload without Optional
-            Map<Object, Object> payload = Map.of(
-                    "id", s.getId(),
-                    "elapsed", sec,
-                    "macAddress", s.getComputer().getMacAddress(),
-                    "name", s.getComputer().getName()
-            );
+            // Build a mutable payload and only include non-null values
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("id", s.getId());
+            if (s.getComputer() != null) {
+                payload.put("computerId", s.getComputer().getId());
+                payload.put("macAddress", s.getComputer().getMacAddress());
+                payload.put("name", s.getComputer().getName());
+            }
+            payload.put("elapsed", sec);
+            payload.put("startTime", s.getStartTime() != null ? s.getStartTime().toString() : null);
+            if (s.getPricePerHour() != null) payload.put("pricePerHour", s.getPricePerHour().toString());
+            if (s.getTotalCost() != null) payload.put("totalCost", s.getTotalCost().toString());
 
-            // Correct: template.convertAndSend(String destination, Object payload)
-            template.convertAndSend("/topic/sessions", payload);
+            // Convert and send - cast payload to Object to disambiguate overload resolution
+            template.convertAndSend("/topic/sessions", (Object) payload);
         });
     }
 }

@@ -1,0 +1,108 @@
+<div class="container-fluid py-3">
+  <div class="row g-3">
+    <main class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Sessions Report</h4>
+        <div class="d-flex gap-2 align-items-center">
+          <label for="filter-computer" class="visually-hidden">Computer ID</label>
+          <input id="filter-computer" placeholder="Computer ID" class="form-control form-control-sm d-inline-block" style="width:140px">
+          <button id="load-sessions" class="btn btn-sm btn-primary">Load</button>
+          <button id="refresh-all" class="btn btn-sm btn-outline-light">Refresh</button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12 col-lg-7">
+          <div class="glass p-3">
+            <h6>Sessions</h6>
+            <div class="table-responsive">
+              <table class="table table-sm table-striped align-middle" id="sessions-list">
+                <thead><tr><th>ID</th><th>Computer</th><th>Started</th><th>Ended</th><th>Minutes</th><th>Price/hr</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5">
+          <div class="glass p-3">
+            <h6>Computer Summary</h6>
+            <div id="computer-summary" class="mt-2">Select a session row to view a detailed computer summary here.</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+function initSessions(){
+  const tbody = document.querySelector('#sessions-list tbody');
+  const summaryEl = document.getElementById('computer-summary');
+  function auth(){ const token = localStorage.getItem('jwt_token'); return token?{headers:{'Authorization':'Bearer '+token}}:{credentials:'same-origin'} }
+
+  async function load(){
+    const id = document.getElementById('filter-computer').value.trim();
+    const url = id?('/api/v1/sessions?computerId='+encodeURIComponent(id)):('/api/v1/sessions?page=0&size=200');
+    tbody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
+    try{
+      const res = await fetch(url, auth());
+      if(!res.ok){ tbody.innerHTML = `<tr><td colspan="8">Error ${res.status}: ${await res.text().catch(()=>res.statusText)}</td></tr>`; return; }
+      const data = await res.json();
+      const list = Array.isArray(data)?data:(data.content||[]);
+      if(list.length===0){ tbody.innerHTML = '<tr><td colspan="8">No sessions</td></tr>'; } else {
+        tbody.innerHTML = '';
+        list.forEach(s=>{
+          const tr = document.createElement('tr');
+            const compId = s.computer?.id || s.computerId || '';
+            const compName = s.computer?.name || s.computerId || '';
+          const price = s.pricePerHour || (s.computer?.branch?.pricePerHour) || '';
+          const total = s.totalCost || s.amount || '';
+          tr.innerHTML = `<td>${s.id||''}</td><td>${compName}</td><td>${s.startTime||s.startedAt||''}</td><td>${s.endTime||''}</td><td>${s.totalMinutes||''}</td><td>${price}</td><td>${total}</td><td>${s.status||''}</td>`;
+          // row click -> show summary for that computer
+          tr.addEventListener('click', (ev)=>{ if(ev.target.closest('button')) return; showSummary(compId); });
+          tbody.appendChild(tr);
+        });
+      }
+    }catch(e){ tbody.innerHTML = `<tr><td colspan="8">${e.message}</td></tr>`; }
+  }
+
+  async function showSummary(computerId){
+    if(!computerId){ summaryEl.innerHTML = 'No computer selected'; return; }
+    summaryEl.innerHTML = '<div>Loading summary for '+computerId+'...</div>';
+    try{
+      const res = await fetch('/api/v1/sessions?computerId='+computerId+'&page=0&size=200', auth());
+      if(!res.ok){ summaryEl.innerHTML = 'Failed to load summary'; return; }
+      const data = await res.json(); const list = Array.isArray(data)?data:(data.content||[]);
+      // compute totals
+      let running=0, totalRev=0, totalMin=0, lastStart='-';
+      list.forEach(s=>{ if(s.status==='RUNNING') running++; totalRev += parseFloat(s.totalCost||0); totalMin += parseInt(s.totalMinutes||0); if(s.startTime) lastStart = s.startTime; });
+      // build small dashboard
+      summaryEl.innerHTML = `
+        <div class="mb-2"><strong>Computer:</strong> ${computerId}</div>
+        <div class="row g-2 mb-2">
+          <div class="col-6"><div class="glass p-2"><div class="small text-muted">Sessions</div><div class="h5">${list.length}</div></div></div>
+          <div class="col-6"><div class="glass p-2"><div class="small text-muted">Running</div><div class="h5">${running}</div></div></div>
+          <div class="col-6 mt-2"><div class="glass p-2"><div class="small text-muted">Total minutes</div><div class="h6">${totalMin}</div></div></div>
+          <div class="col-6 mt-2"><div class="glass p-2"><div class="small text-muted">Total revenue</div><div class="h6">${Number(totalRev).toFixed(2)}</div></div></div>
+        </div>
+        <div class="mt-2"><button id="view-computer-dashboard" class="btn btn-sm btn-outline-light">Open computer dashboard</button></div>
+      `;
+      document.getElementById('view-computer-dashboard').addEventListener('click', ()=>{
+        // navigate to dashboard and highlight computer if possible
+        const links = document.querySelectorAll('[data-page]');
+        links.forEach(l=>{ if(l.dataset.page==='/dashboard.html') l.click(); });
+        // push state to localStorage so dashboard can pick it up
+        localStorage.setItem('focus_computer', computerId);
+      });
+    }catch(e){ summaryEl.innerHTML = e.message; }
+  }
+
+  document.getElementById('load-sessions').addEventListener('click', load);
+  document.getElementById('refresh-all').addEventListener('click', load);
+  // auto load
+  load();
+}
+
+try{ if(typeof initSessions === 'function') initSessions(); }catch(e){}
+</script>
