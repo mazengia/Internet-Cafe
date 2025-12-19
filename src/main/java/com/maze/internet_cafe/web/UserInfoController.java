@@ -2,6 +2,7 @@ package com.maze.internet_cafe.web;
 
 import com.maze.internet_cafe.security.JwtUtil;
 import com.maze.internet_cafe.security.RevokedTokenService;
+import com.maze.internet_cafe.security.UserDetailsImp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,7 +35,13 @@ public class UserInfoController {
         if (authentication == null || authentication.getName() == null) {
             return ResponseEntity.status(401).body(Map.of("authenticated", false));
         }
-        return ResponseEntity.ok(Map.of("username", authentication.getName(), "authorities", authentication.getAuthorities()));
+        UserDetailsImp user = (UserDetailsImp) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                Map.of(
+                        "username", authentication.getName(),
+                        "authorities", authentication.getAuthorities(),
+                        "name", Objects.requireNonNull(user).getName()
+                ));
     }
 
     @PostMapping("/logout")

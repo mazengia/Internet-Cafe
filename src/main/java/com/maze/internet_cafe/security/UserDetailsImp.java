@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class UserDetailsImp implements UserDetails {
+
     private User user;
 
     public UserDetailsImp(User user) {
@@ -19,7 +20,9 @@ public class UserDetailsImp implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getAuthorities().stream().map((authority) -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors.toList());
     }
-
+    public String getName() {
+        return user.getName();
+    }
     @Override
     public String getPassword() {
         return user.getPassword();

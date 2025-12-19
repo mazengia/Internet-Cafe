@@ -38,7 +38,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         // If no Authorization header, check for a cookie named JWT
         if ((header == null || header.isBlank()) && request.getCookies() != null) {
             for (Cookie c : request.getCookies()) {
-                if ("JWT".equals(c.getName()) && c.getValue() != null && !c.getValue().isBlank()) {
+                if (SecurityConstants.TOKEN_TYPE.equals(c.getName()) && c.getValue() != null && !c.getValue().isBlank()) {
                     header = SecurityConstants.TOKEN_PREFIX + c.getValue();
                     break;
                 }

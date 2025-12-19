@@ -187,7 +187,7 @@ function initDashboard(){
     try{
       const res = await fetch('/api/auth/me', token?{headers:{'Authorization':'Bearer '+token}}:{credentials:'same-origin'});
       if(!res.ok){ ua.innerHTML=`<a href="/login" class="btn btn-sm btn-outline-light">Login</a>`; return; }
-      const j = await res.json(); ua.innerHTML = `<strong>${j.username||''}</strong> <button id="logout" class="btn btn-sm btn-outline-light ms-2">Logout</button>`;
+      const j = await res.json(); ua.innerHTML = `<strong>${j.name||''}</strong> <button id="logout" class="btn btn-sm btn-outline-light ms-2">Logout</button>`;
       document.getElementById('logout').addEventListener('click', async ()=>{ try{ await fetch('/api/auth/logout',{method:'POST', credentials:'same-origin'}); }catch(e){} localStorage.removeItem('jwt_token'); window.location.href='/login'; });
     }catch(e){ ua.innerHTML=`<a href="/login" class="btn btn-sm btn-outline-light">Login</a>`; }
   }
