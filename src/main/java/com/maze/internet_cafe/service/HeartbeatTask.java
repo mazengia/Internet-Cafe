@@ -17,7 +17,6 @@ public class HeartbeatTask {
         exec.scheduleAtFixedRate(() -> {
             WebClient.create(AgentService.SERVER)
                     .post()
-//                    .uri("/api/agents/heartbeat")
                     .uri("/api/v1/computers/heartbeat")
                     .bodyValue(Map.of("name", NetworkUtil.machineName()))
                     .retrieve()
