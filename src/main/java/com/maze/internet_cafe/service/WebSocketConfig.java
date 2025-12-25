@@ -17,6 +17,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // /topic is for broadcasting to many, /queue is for one-to-one
         config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/app");
+
+//        This means:
+//
+//        Server sends messages to /topic/**
+//
+//         Clients subscribe to /topic/**
+//
+//         Server receives messages on /app/**
     }
 
     @Override

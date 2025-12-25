@@ -36,3 +36,9 @@ server:
 
 jwt:
   secret: sP8FIs1KWI1Czg+bHFQQcDyulktrPJsY5TyoGe5P7CPNi/uckxAb0OTqPY3/IybiSR7dXnHXktk8x2NzNJixdg==
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    feign:
+      client: DEBUG

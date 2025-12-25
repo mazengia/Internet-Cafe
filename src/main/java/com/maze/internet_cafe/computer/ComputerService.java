@@ -5,11 +5,14 @@ import com.maze.internet_cafe.computer.dto.ComputerCreateDto;
 import com.maze.internet_cafe.computer.dto.ComputerDto;
 import com.maze.internet_cafe.exception.EntityNotFoundException;
 import com.maze.internet_cafe.branch.BranchRepository;
+import com.maze.internet_cafe.service.ComputerCommand;
+import com.maze.internet_cafe.service.LockService;
 import com.maze.internet_cafe.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,7 @@ public class ComputerService {
     private final SessionService sessionService;
     private final BranchRepository branchRepository;
     private final ModelMapper mapper = new ModelMapper();
+    private final SimpMessagingTemplate messagingTemplate;
 
 
     public ComputerDto create(ComputerCreateDto dto) {
@@ -63,11 +67,16 @@ public class ComputerService {
         return page.map(this::toDto);
     }
 
-    public void handleHeartbeat(String mac) {
-        if (mac != null) {
-            computerRepository.findByName(mac).ifPresent(computer -> {
+    public void handleHeartbeat(String name) {
+        if (name != null) {
+            computerRepository.findByName(name).ifPresent(computer -> {
+                System.out.println(" computer status: " + computer.getStatus());
                 computer.setLastHeartbeat(java.time.LocalDateTime.now());
-                computer.setStatus(ComputerStatus.IN_USE);
+                if( computer.getStatus() != ComputerStatus.IN_USE){
+                    computer.setStatus(ComputerStatus.AVAILABLE);
+                    computerRepository.save(computer);
+                    LockService.lock();
+                }
                 computerRepository.save(computer);
             });
         }
@@ -82,5 +91,28 @@ public class ComputerService {
     public Computer findById(Long id) {
         return computerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Computer.class, "id", id.toString()));
+    }
+
+    public void lockComputer(Long computerId) {
+
+        Computer computer = computerRepository.findById(computerId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                Computer.class, "id", computerId.toString()
+                        )
+                );
+
+        // ⏸ Pause session if running (billing-safe)
+        sessionService.stopRunningSession(computerId);
+
+        // 🔒 Send LOCK command via STOMP
+        messagingTemplate.convertAndSend(
+                "/topic/computers/" + computerId,
+                new ComputerCommand(computerId, "LOCK")
+        );
+
+        // 🗃 Update status
+        computer.setStatus(ComputerStatus.LOCKED);
+        computerRepository.save(computer);
     }
 }

@@ -1,35 +1,23 @@
 package com.maze.internet_cafe.session;
 
-import com.maze.internet_cafe.model.User;
-import com.maze.internet_cafe.model.UserRepository;
 import com.maze.internet_cafe.session.dto.SessionStartRequest;
-import com.maze.internet_cafe.session.dto.SessionStopRequest;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/sessions")
+@RequiredArgsConstructor
 public class SessionController {
 
     private final SessionService sessionService;
-    private final UserRepository userRepository;
 
-    public SessionController(SessionService sessionService, UserRepository userRepository) {
-        this.sessionService = sessionService;
-        this.userRepository = userRepository;
-    }
 
     //    @PreAuthorize("hasAnyRole('ADMIN','AGENT','USER')")
     @PostMapping("/{computerId}/start")
@@ -40,17 +28,11 @@ public class SessionController {
     }
 
     //    @PreAuthorize("hasAnyRole('ADMIN','AGENT','USER')")
-    @PostMapping("/{computerId}/{sessionId}/stop")
-    public ResponseEntity<Session> stop(@PathVariable Long computerId, @PathVariable Long sessionId, @RequestBody(required = false) SessionStopRequest req) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User actingUser = null;
-        if (auth != null && auth.getName() != null) {
-            actingUser = userRepository.findByUsername(auth.getName()).orElse(null);
-        }
-        Collection<? extends GrantedAuthority> authorities = auth != null ? auth.getAuthorities() : null;
 
-        Session dto = sessionService.stop(computerId, sessionId, req, actingUser, authorities);
-        return ResponseEntity.ok(dto);
+    @PostMapping("/{computerId}/stop-running")
+    public ResponseEntity<Session> stopRunning(@PathVariable Long computerId) {
+        Session stopped = sessionService.stopRunningSession(computerId);
+        return ResponseEntity.ok(stopped);
     }
 
     //    @PreAuthorize("isAuthenticated()")
@@ -69,33 +51,5 @@ public class SessionController {
         return ResponseEntity.ok(sessionService.get(id));
     }
 
-    /**
-     * Terminate a running session on a computer by passing either `mac` (mac address) or `name` (machine name) in the body.
-     * Example body: { "mac": "AA:BB:..." } or { "name": "host-name" }
-     */
-    @PostMapping("/terminate")
-    public ResponseEntity<Void> terminate(@RequestBody Map<String, String> request) {
-        String name = request.get("name");
-        if ((name == null || name.isBlank()) && (name == null || name.isBlank())) {
-            return ResponseEntity.badRequest().build();
-        }
 
-        sessionService.terminateByName(name);
-
-        return ResponseEntity.ok().build();
-    }
-
-    // New endpoint: stop running session (no sessionId required) - convenient for UI
-    @PostMapping("/{computerId}/stop-running")
-    public ResponseEntity<Session> stopRunning(@PathVariable Long computerId) {
-        Session stopped = sessionService.stopRunningSession(computerId);
-        return ResponseEntity.ok(stopped);
-    }
-
-    // New endpoint: terminate running session immediately by computer id
-    @PostMapping("/{computerId}/terminate-now")
-    public ResponseEntity<Void> terminateNow(@PathVariable Long computerId) {
-        sessionService.terminateByComputerId(computerId);
-        return ResponseEntity.ok().build();
-    }
 }

@@ -173,7 +173,4 @@ public class AgentService {
             startAutoSession(currentComputerId);
         }
     }
-    public Long getCurrentComputerId() {
-        return currentComputerId;
-    }
 }

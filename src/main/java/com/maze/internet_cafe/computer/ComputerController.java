@@ -44,14 +44,19 @@ public class ComputerController {
     //    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<ComputerDto> get(@PathVariable Long id) {
+        System.out.println("bbbb=");
         Computer c = computerService.findById(id);
         return ResponseEntity.ok(computerService.toDto(c));
     }
 
     @PostMapping("/heartbeat")
     public ResponseEntity<Void> handleHeartbeat(@RequestBody Map<String, String> data) {
-        String mac = data.get("mac");
-        computerService.handleHeartbeat(mac);
+        String name = data.get("name");
+        computerService.handleHeartbeat(name);
         return ResponseEntity.ok().build();
+    }
+    @PostMapping("/{id}/lock")
+    public void lock(@PathVariable Long id) {
+        computerService.lockComputer(id);
     }
 }

@@ -4,7 +4,7 @@ public class LockService {
 
     public static void lock() {
         try {
-            if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            if (isWindows()) {
                 Runtime.getRuntime().exec(
                         "rundll32 user32.dll,LockWorkStation"
                 );
@@ -14,5 +14,9 @@ public class LockService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
     }
 }

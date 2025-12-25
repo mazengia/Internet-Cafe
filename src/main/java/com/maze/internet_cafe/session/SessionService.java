@@ -61,43 +61,7 @@ public class SessionService {
         return sessionRepository.save(s);
     }
 
-    /**
-     * Stop a session. This method enforces permission: the actingUser must be the owner of the session
-     * or must have ROLE_ADMIN or ROLE_AGENT authority.
-     *
-     * @param computerId  computer id (for validation)
-     * @param sessionId   session id to stop
-     * @param req         optional stop request (contains endTime)
-     * @param actingUser  the user performing the action (may be null for system calls)
-     * @param authorities authorities of the acting principal
-     * @return updated SessionDto
-     */
-    public Session stop(Long computerId, Long sessionId, SessionStopRequest req, User actingUser, Collection<? extends GrantedAuthority> authorities) {
-        Session s = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new EntityNotFoundException(Session.class, "id", sessionId.toString()));
 
-        if (s.getStatus() != SessionStatus.RUNNING) {
-            throw new IllegalStateException("Session is not running");
-        }
-
-        // Permission check: owner or admin/agent
-        boolean hasAdminOrAgent = authorities != null && authorities.stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()) || "ROLE_AGENT".equals(a.getAuthority()));
-        if (!hasAdminOrAgent) {
-            throw new SecurityException("Forbidden");
-        }
-
-        LocalDateTime end = req != null && req.getEndTime() != null ? req.getEndTime() : LocalDateTime.now();
-        s.setEndTime(end);
-        s.setStatus(SessionStatus.FINISHED);
-
-        billingService.calculate(s);
-
-        Computer computer = s.getComputer();
-        computer.setStatus(com.maze.internet_cafe.computer.ComputerStatus.AVAILABLE);
-        computerRepository.save(computer);
-
-        return sessionRepository.save(s);
-    }
 
 
     public Page<Session> listByComputer(Long computerId, Pageable pageable) {
@@ -109,51 +73,16 @@ public class SessionService {
                 .orElseThrow(() -> new EntityNotFoundException(Session.class, "id", id.toString()));
     }
 
-
-    @Transactional
-    public void terminateByName(String name) {
-
-        Computer computer = computerRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException(Computer.class, "name", name));
-
-        List<Session> runningSessions =
-                sessionRepository.findAllByComputerIdAndStatus(
-                        computer.getId(), SessionStatus.RUNNING);
-
-        if (runningSessions.isEmpty()) {
-            return;
-        }
-
-        // pick the latest session
-        Session session = runningSessions.stream()
-                .max(Comparator.comparing(Session::getStartTime))
-                .orElseThrow();
-
-        session.setEndTime(LocalDateTime.now());
-        session.setStatus(SessionStatus.FINISHED);
-
-        long minutes = ChronoUnit.MINUTES.between(
-                session.getStartTime(), session.getEndTime());
-
-        BigDecimal cost = session.getPricePerHour()
-                .multiply(BigDecimal.valueOf(Math.max(minutes, 1)))
-                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-
-        session.setTotalMinutes(minutes);
-        session.setTotalCost(cost);
-
-        computer.setStatus(ComputerStatus.AVAILABLE);
-
-        sessionRepository.save(session);
-        computerRepository.save(computer);
-    }
-
-
     // New helper: stop the running session for a computer by id without requiring authentication
     @Transactional
     public Session stopRunningSession(Long computerId) {
-        Session session = sessionRepository.findByComputerIdAndStatus(computerId, SessionStatus.RUNNING)
-                .orElseThrow(() -> new EntityNotFoundException(Session.class, "computerId", computerId.toString()));
+        Session session = sessionRepository
+                .findByComputerIdAndStatus(computerId, SessionStatus.RUNNING)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Session.class,
+                        "computerId & status",
+                        computerId + " / " + SessionStatus.RUNNING
+                ));
 
         session.setEndTime(LocalDateTime.now());
         session.setStatus(SessionStatus.FINISHED);
@@ -167,29 +96,4 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
-    // New helper: terminate by computer id (similar to terminateByName but using id)
-    @Transactional
-    public void terminateByComputerId(Long computerId) {
-        Computer computer = computerRepository.findById(computerId)
-                .orElseThrow(() -> new EntityNotFoundException(Computer.class, "id", computerId.toString()));
-
-        sessionRepository.findByComputerIdAndStatus(computer.getId(), SessionStatus.RUNNING)
-                .ifPresent(session -> {
-                    session.setEndTime(LocalDateTime.now());
-                    session.setStatus(SessionStatus.FINISHED);
-
-                    long minutes = ChronoUnit.MINUTES.between(session.getStartTime(), session.getEndTime());
-                    BigDecimal cost = session.getPricePerHour()
-                            .multiply(BigDecimal.valueOf(Math.max(minutes, 1)))
-                            .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-
-                    session.setTotalMinutes(minutes);
-                    session.setTotalCost(cost);
-
-                    computer.setStatus(ComputerStatus.AVAILABLE);
-
-                    sessionRepository.save(session);
-                    computerRepository.save(computer);
-                });
-    }
 }
