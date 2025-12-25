@@ -93,26 +93,5 @@ public class ComputerService {
                 .orElseThrow(() -> new EntityNotFoundException(Computer.class, "id", id.toString()));
     }
 
-    public void lockComputer(Long computerId) {
 
-        Computer computer = computerRepository.findById(computerId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                Computer.class, "id", computerId.toString()
-                        )
-                );
-
-        // ⏸ Pause session if running (billing-safe)
-        sessionService.stopRunningSession(computerId);
-
-        // 🔒 Send LOCK command via STOMP
-        messagingTemplate.convertAndSend(
-                "/topic/computers/" + computerId,
-                new ComputerCommand(computerId, "LOCK")
-        );
-
-        // 🗃 Update status
-        computer.setStatus(ComputerStatus.LOCKED);
-        computerRepository.save(computer);
-    }
 }
