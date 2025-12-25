@@ -9,6 +9,7 @@ import com.maze.internet_cafe.service.ComputerCommand;
 import com.maze.internet_cafe.service.LockService;
 import com.maze.internet_cafe.session.SessionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +17,13 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityExistsException;
 
 import java.time.LocalDateTime;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ComputerService {
 
     private final ComputerRepository computerRepository;
@@ -72,12 +73,13 @@ public class ComputerService {
             computerRepository.findByName(name).ifPresent(computer -> {
                 System.out.println(" computer status: " + computer.getStatus());
                 computer.setLastHeartbeat(java.time.LocalDateTime.now());
-                if( computer.getStatus() != ComputerStatus.IN_USE){
-                    computer.setStatus(ComputerStatus.AVAILABLE);
-                    computerRepository.save(computer);
+                computerRepository.save(computer);
+                if (computer.getStatus().equals(ComputerStatus.LOCKED)) {
                     LockService.lock();
                 }
-                computerRepository.save(computer);
+                if (computer.getStatus().equals(ComputerStatus.OFFLINE)) {
+                    LockService.shutdown();
+                }
             });
         }
     }
@@ -93,5 +95,49 @@ public class ComputerService {
                 .orElseThrow(() -> new EntityNotFoundException(Computer.class, "id", id.toString()));
     }
 
+    public void lockComputer(Long computerId) {
 
+        Computer computer = computerRepository.findById(computerId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                Computer.class, "id", computerId.toString()
+                        )
+                );
+        if (computer.getStatus() == ComputerStatus.IN_USE) {
+
+            sessionService.stopRunningSession(computerId);
+        }
+
+        messagingTemplate.convertAndSend(
+                "/topic/computers/" + computerId,
+                new ComputerCommand(computerId, "LOCK")
+        );
+
+        computer.setStatus(ComputerStatus.LOCKED);
+        computerRepository.save(computer);
+
+    }
+
+    public void shoutdownComputer(Long computerId) {
+
+        Computer computer = computerRepository.findById(computerId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                Computer.class, "id", computerId.toString()
+                        )
+                );
+        if (computer.getStatus() == ComputerStatus.IN_USE) {
+
+            sessionService.stopRunningSession(computerId);
+        }
+
+        messagingTemplate.convertAndSend(
+                "/topic/computers/" + computerId,
+                new ComputerCommand(computerId, "LOCK")
+        );
+
+        computer.setStatus(ComputerStatus.OFFLINE);
+        computerRepository.save(computer);
+
+    }
 }

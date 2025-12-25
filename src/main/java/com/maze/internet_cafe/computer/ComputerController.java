@@ -55,4 +55,12 @@ public class ComputerController {
         computerService.handleHeartbeat(name);
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/{id}/lock")
+    public void lock(@PathVariable Long id) {
+        computerService.lockComputer(id);
+    }
+    @PostMapping("/{id}/shoutdown")
+    public void shoutdownComputer(@PathVariable Long id) {
+        computerService.shoutdownComputer(id);
+    }
 }

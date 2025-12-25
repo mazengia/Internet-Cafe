@@ -66,13 +66,7 @@
 </div>
 
 <style>
-  .glass {
-    border-radius:10px;
-    padding:12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  }
+  .glass { border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
   .stat i { color:#7c3aed; font-size:1.4rem; }
   .metric { font-weight:700; }
   .pill { padding:.25rem .5rem; border-radius:999px; }
@@ -101,10 +95,8 @@
     const statRunning = document.getElementById('stat-running');
     const statRevenue = document.getElementById('stat-revenue');
 
-    // Escape HTML
     function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-    // Computer Card Template
     function cardTemplate(c, elapsed, total){
       const name = escapeHtml(c.name||('Computer '+(c.id||'')));
       const mac = escapeHtml(c.macAddress||'');
@@ -112,34 +104,36 @@
 
       let statusBadge = `<span class="pill muted">AVAILABLE</span>`;
       if (c.status === 'IN_USE') statusBadge = `<span class="pill success">IN USE</span>`;
+      if (c.status === 'LOCKED') statusBadge = `<span class="pill danger">LOCKED</span>`;
 
       const startClass = (c.status !== 'AVAILABLE') ? ' d-none' : '';
       const stopClass  = (c.status === 'IN_USE') ? '' : ' d-none';
 
       return `
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="glass p-3 computer h-100">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div>
-            <div class="fw-semibold">${name}</div>
-            <div class="small text-muted">${mac}</div>
-          </div>
-          ${statusBadge}
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <div><small class="text-muted">Elapsed</small><div class="metric">${elapsed}</div></div>
-          <div><small class="text-muted">Price/hr</small><div>${price}</div></div>
-          <div><small class="text-muted">Total</small><div>${total}</div></div>
-        </div>
-        <div class="d-flex gap-2 flex-wrap">
-          <button class="btn btn-sm btn-success start-btn${startClass}" data-id="${c.id}"><i class="bi bi-play-fill"></i> Start</button>
-          <button class="btn btn-sm btn-warning stop-btn${stopClass}" data-id="${c.id}"><i class="bi bi-stop-fill"></i> Stop</button>
-        </div>
+<div class="col-12 col-md-6 col-lg-4">
+  <div class="glass p-3 computer h-100">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <div>
+        <div class="fw-semibold">${name}</div>
+        <div class="small text-muted">${mac}</div>
       </div>
-    </div>`;
+      ${statusBadge}
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div><small class="text-muted">Elapsed</small><div class="metric">${elapsed}</div></div>
+      <div><small class="text-muted">Price/hr</small><div>${price}</div></div>
+      <div><small class="text-muted">Total</small><div>${total}</div></div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <button class="btn btn-sm btn-success start-btn${startClass}" data-id="${c.id}"><i class="bi bi-play-fill"></i> Start</button>
+      <button class="btn btn-sm btn-warning stop-btn${stopClass}" data-id="${c.id}"><i class="bi bi-stop-fill"></i> Stop</button>
+      <button class="btn btn-sm btn-danger lock-btn" data-id="${c.id}"><i class="bi bi-lock-fill"></i> Lock</button>
+      <button class="btn btn-sm btn-dark shutdown-btn" data-id="${c.id}"><i class="bi bi-power"></i> Shutdown</button>
+    </div>
+  </div>
+</div>`;
     }
 
-    // Render grid & table
     function renderGrid(){
       gridEl.innerHTML = '';
       Object.values(state.computers).forEach(c=>{
@@ -164,7 +158,9 @@
           <td>${elapsed}</td>
           <td>${c.branchPrice||'-'}</td>
           <td>${total}</td>
-          <td><button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button></td>`;
+          <td>
+            <button class="btn btn-sm btn-warning stop-btn" data-id="${c.id}">Stop</button>
+          </td>`;
           sessionsTbody.appendChild(tr);
         }
       });
@@ -184,7 +180,6 @@
       statRevenue.innerText = revenue?revenue.toFixed(2):'-';
     }
 
-    // Fetch computers
     async function fetchComputers(){
       try{
         const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions());
@@ -196,7 +191,6 @@
       }catch(e){ console.error('fetchComputers', e); }
     }
 
-    // STOMP for real-time sessions
     let stompClient;
     function startStomp(){
       try{
@@ -225,7 +219,6 @@
       }catch(e){ console.warn('stomp init failed', e); }
     }
 
-    // Auth helper
     function authOptions(extra){
       const token = localStorage.getItem('jwt_token');
       const headers={'Content-Type':'application/json'};
@@ -236,7 +229,6 @@
       return opts;
     }
 
-    // Delegated click actions: start / stop
     document.addEventListener('click', async ev=>{
       const t = ev.target.closest('button'); if(!t) return;
 
@@ -264,10 +256,31 @@
         }catch(e){ alert('Stop error'); }
       }
 
+      // LOCK
+      if(t.matches('.lock-btn')){
+        const id = t.dataset.id;
+        if(!confirm('Lock this computer?')) return;
+        try{
+          const r = await fetch(`/api/v1/computers/${id}/lock`, authOptions({method:'POST'}));
+          if(!r.ok) return alert('Lock failed');
+          state.computers[id].status='LOCKED';
+          renderGrid();
+        }catch(e){ alert('Lock error'); }
+      }
 
+      // SHUTDOWN
+      if(t.matches('.shutdown-btn')){
+        const id = t.dataset.id;
+        if(!confirm('Are you sure you want to shutdown this computer?')) return;
+        try{
+          const r = await fetch(`/api/v1/computers/${id}/shoutdown`, authOptions({method:'POST'}));
+          if(!r.ok) return alert('Shutdown failed');
+          state.computers[id].status='LOCKED'; // Optionally mark as LOCKED
+          renderGrid();
+        }catch(e){ alert('Shutdown error'); }
+      }
     });
 
-    // User area & logout
     async function updateUserArea(){
       const ua = document.getElementById('user-area'); if(!ua) return;
       const token = localStorage.getItem('jwt_token');
@@ -284,13 +297,11 @@
       }catch(e){ ua.innerHTML=`<a href="/login" class="btn btn-sm btn-outline-light">Login</a>`; }
     }
 
-    // Initialize dashboard
     updateUserArea();
     fetchComputers();
     startStomp();
-    startAutoRefresh?.();
 
-    // Highlight computer by ID (optional)
+    // Optional: highlight computer by ID
     function focusComputerById(id){
       if(!id) return;
       setTimeout(()=>{
@@ -312,6 +323,5 @@
     }catch(e){}
   }
 
-  // Run
   try{ if(typeof initDashboard==='function') initDashboard(); }catch(e){}
 </script>

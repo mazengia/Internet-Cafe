@@ -16,6 +16,18 @@ public class LockService {
         }
     }
 
+    public static void shutdown() {
+        try {
+            if (isWindows()) {
+                Runtime.getRuntime().exec("shutdown -s -t 0");
+            } else {
+                Runtime.getRuntime().exec("shutdown -h now");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("win");
     }
