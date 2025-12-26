@@ -1,9 +1,7 @@
-package com.maze.internet_cafe.web;
+package com.maze.internet_cafe.users;
 
-import com.maze.internet_cafe.model.Authority;
-import com.maze.internet_cafe.model.AuthorityRepository;
-import com.maze.internet_cafe.model.User;
-import com.maze.internet_cafe.model.UserRepository;
+import com.maze.internet_cafe.authority.Authority;
+import com.maze.internet_cafe.authority.AuthorityRepository;
 import com.maze.internet_cafe.session.dto.UserCreateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

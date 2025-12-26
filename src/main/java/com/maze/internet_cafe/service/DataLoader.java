@@ -1,9 +1,9 @@
 package com.maze.internet_cafe.service;
 
-import com.maze.internet_cafe.model.Authority;
-import com.maze.internet_cafe.model.AuthorityRepository;
-import com.maze.internet_cafe.model.User;
-import com.maze.internet_cafe.model.UserRepository;
+import com.maze.internet_cafe.authority.Authority;
+import com.maze.internet_cafe.authority.AuthorityRepository;
+import com.maze.internet_cafe.users.User;
+import com.maze.internet_cafe.users.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

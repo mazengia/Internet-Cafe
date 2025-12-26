@@ -51,5 +51,20 @@ public class SessionController {
         return ResponseEntity.ok(sessionService.get(id));
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<Page<Session>> list(
+            @RequestParam(required = false) Long computerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Session> result;
+        if (computerId != null) {
+            result = sessionService.listByComputer(computerId, pageable);
+        } else {
+            result = sessionService.findAll(pageable);
+        }
+        return ResponseEntity.ok(result);
+    }
 }

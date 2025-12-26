@@ -1,8 +1,7 @@
-package com.maze.internet_cafe.web;
+package com.maze.internet_cafe.users;
 
 import com.maze.internet_cafe.security.JwtUtil;
 import com.maze.internet_cafe.security.RevokedTokenService;
-import com.maze.internet_cafe.security.UserDetailsImp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;

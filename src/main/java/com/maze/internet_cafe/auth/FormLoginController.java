@@ -1,4 +1,4 @@
-package com.maze.internet_cafe.web;
+package com.maze.internet_cafe.auth;
 
 import com.maze.internet_cafe.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;

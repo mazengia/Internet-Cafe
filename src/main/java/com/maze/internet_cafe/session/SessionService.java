@@ -1,30 +1,18 @@
 package com.maze.internet_cafe.session;
 
-import com.maze.internet_cafe.branch.BranchRepository;
 import com.maze.internet_cafe.computer.Computer;
 import com.maze.internet_cafe.computer.ComputerRepository;
 import com.maze.internet_cafe.computer.ComputerStatus;
 import com.maze.internet_cafe.exception.EntityNotFoundException;
-import com.maze.internet_cafe.model.User;
 import com.maze.internet_cafe.service.BillingService;
 import com.maze.internet_cafe.session.dto.SessionStartRequest;
-import com.maze.internet_cafe.session.dto.SessionStopRequest;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -62,10 +50,12 @@ public class SessionService {
     }
 
 
-
-
     public Page<Session> listByComputer(Long computerId, Pageable pageable) {
         return sessionRepository.findByComputerId(computerId, pageable);
+    }
+
+    public Page<Session> findAll(Pageable pageable) {
+        return sessionRepository.findAllByOrderByIdDesc(pageable);
     }
 
     public Session get(Long id) {

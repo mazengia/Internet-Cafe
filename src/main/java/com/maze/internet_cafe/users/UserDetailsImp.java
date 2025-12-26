@@ -1,6 +1,5 @@
-package com.maze.internet_cafe.security;
+package com.maze.internet_cafe.users;
 
-import com.maze.internet_cafe.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package com.maze.internet_cafe.web;
+package com.maze.internet_cafe.auth;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

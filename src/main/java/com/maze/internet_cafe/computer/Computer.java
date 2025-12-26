@@ -1,6 +1,7 @@
 package com.maze.internet_cafe.computer;
 
 import com.maze.internet_cafe.branch.Branch;
+import com.maze.internet_cafe.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "computers")
 @Getter
 @Setter
-public class Computer {
+public class Computer  extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

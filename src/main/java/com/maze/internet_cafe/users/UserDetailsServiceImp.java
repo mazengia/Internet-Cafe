@@ -1,7 +1,5 @@
-package com.maze.internet_cafe.security;
+package com.maze.internet_cafe.users;
 
-import com.maze.internet_cafe.model.User;
-import com.maze.internet_cafe.model.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

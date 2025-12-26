@@ -1,4 +1,4 @@
-package com.maze.internet_cafe.model;
+package com.maze.internet_cafe.authority;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

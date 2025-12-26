@@ -1,5 +1,5 @@
 
-package com.maze.internet_cafe.model;
+package com.maze.internet_cafe.users;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

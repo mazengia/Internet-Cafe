@@ -1,4 +1,4 @@
-package com.maze.internet_cafe.web;
+package com.maze.internet_cafe.auth;
 
 import com.maze.internet_cafe.computer.ComputerService;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,6 @@ public class DashboardController {
 
     @GetMapping({"/","/dashboard"})
     public String dashboard(Model model) {
-        // provide initial list of computers to render
         model.addAttribute("computers", computerService.list(null, org.springframework.data.domain.Pageable.unpaged()).getContent());
         return "index";
     }

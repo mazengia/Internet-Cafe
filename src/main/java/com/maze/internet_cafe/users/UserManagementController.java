@@ -1,6 +1,5 @@
-package com.maze.internet_cafe.web;
+package com.maze.internet_cafe.users;
 
-import com.maze.internet_cafe.model.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

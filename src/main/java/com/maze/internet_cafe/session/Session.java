@@ -1,8 +1,7 @@
 package com.maze.internet_cafe.session;
 
-import com.maze.internet_cafe.branch.Branch;
 import com.maze.internet_cafe.computer.Computer;
-import com.maze.internet_cafe.model.User;
+import com.maze.internet_cafe.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "sessions")
 @Getter
 @Setter
-public class Session {
+public class Session extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

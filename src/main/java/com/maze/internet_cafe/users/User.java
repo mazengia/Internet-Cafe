@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.maze.internet_cafe.model;
+package com.maze.internet_cafe.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.maze.internet_cafe.authority.Authority;
+import com.maze.internet_cafe.utils.Auditable;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -15,7 +17,7 @@ import java.util.List;
 
 @Entity(name = "users")
 @Data
-public class User {
+public class User  extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
