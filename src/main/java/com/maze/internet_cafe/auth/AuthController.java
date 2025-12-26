@@ -31,12 +31,10 @@ public class AuthController {
             var userDetails = (org.springframework.security.core.userdetails.UserDetails) auth.getPrincipal();
             String token = jwtUtil.generateToken(userDetails);
 
-            // Set HttpOnly cookie with SameSite=Lax for browser flows
             Cookie cookie = new Cookie("JWT", token);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
             cookie.setMaxAge((int) JwtUtil.JWT_TOKEN_VALIDITY); // seconds
-            // Add cookie normally
             response.addCookie(cookie);
             // Also add Set-Cookie with SameSite attribute (Servlet API may not support SameSite directly)
             StringBuilder sb = new StringBuilder();
