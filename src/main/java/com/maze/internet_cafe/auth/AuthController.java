@@ -34,8 +34,9 @@ public class AuthController {
             Cookie cookie = new Cookie("JWT", token);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
-            cookie.setMaxAge((int) JwtUtil.JWT_TOKEN_VALIDITY);
+            cookie.setMaxAge((int) JwtUtil.JWT_TOKEN_VALIDITY); // seconds
             response.addCookie(cookie);
+            // Also add Set-Cookie with SameSite attribute (Servlet API may not support SameSite directly)
             StringBuilder sb = new StringBuilder();
             sb.append("JWT=").append(token)
               .append("; Path=/; HttpOnly; Max-Age=").append((int) JwtUtil.JWT_TOKEN_VALIDITY)
