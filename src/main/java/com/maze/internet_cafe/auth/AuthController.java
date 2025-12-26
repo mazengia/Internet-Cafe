@@ -36,6 +36,7 @@ public class AuthController {
             cookie.setHttpOnly(true);
             cookie.setPath("/");
             cookie.setMaxAge((int) JwtUtil.JWT_TOKEN_VALIDITY); // seconds
+            // Add cookie normally
             response.addCookie(cookie);
             // Also add Set-Cookie with SameSite attribute (Servlet API may not support SameSite directly)
             StringBuilder sb = new StringBuilder();
