@@ -15,25 +15,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final ComputerRepository computerRepository;
     private final BillingService billingService;
 
+    // ================= START SESSION =================
     public Session start(Long computerId, SessionStartRequest req) {
+
+        // 1. Stop running session if exists
+        sessionRepository.findByComputerIdAndStatus(computerId, SessionStatus.RUNNING)
+                .ifPresent(this::stopRunningSessionInternal);
+
+        // 2. Load computer
         Computer computer = computerRepository.findById(computerId)
-                .orElseThrow(() -> new EntityNotFoundException(Computer.class, "id", computerId.toString()));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(Computer.class, "id", computerId.toString())
+                );
 
-        if (computer.getStatus() == com.maze.internet_cafe.computer.ComputerStatus.IN_USE) {
-            throw new IllegalStateException("Computer is already in use");
-        }
-
+        // 3. Create new session
         Session s = new Session();
         s.setComputer(computer);
         s.setStartTime(LocalDateTime.now());
+
         if (req.getPricePerHour() != null) {
             s.setPricePerHour(req.getPricePerHour());
         } else if (computer.getBranch() != null && computer.getBranch().getPricePerHour() != null) {
@@ -41,15 +48,18 @@ public class SessionService {
         } else {
             throw new IllegalStateException("No price configured for session and branch");
         }
+
         s.setStatus(SessionStatus.RUNNING);
 
-        computer.setStatus(com.maze.internet_cafe.computer.ComputerStatus.IN_USE);
+        // 4. Update computer status
+        computer.setStatus(ComputerStatus.IN_USE);
         computerRepository.save(computer);
 
+        // 5. Save session
         return sessionRepository.save(s);
     }
 
-
+    // ================= LISTING =================
     public Page<Session> listByComputer(Long computerId, Pageable pageable) {
         return sessionRepository.findByComputerId(computerId, pageable);
     }
@@ -60,12 +70,14 @@ public class SessionService {
 
     public Session get(Long id) {
         return sessionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Session.class, "id", id.toString()));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(Session.class, "id", id.toString())
+                );
     }
 
-    // New helper: stop the running session for a computer by id without requiring authentication
-    @Transactional
+    // ================= PUBLIC STOP =================
     public Session stopRunningSession(Long computerId) {
+
         Session session = sessionRepository
                 .findByComputerIdAndStatus(computerId, SessionStatus.RUNNING)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -73,6 +85,13 @@ public class SessionService {
                         "computerId & status",
                         computerId + " / " + SessionStatus.RUNNING
                 ));
+
+        stopRunningSessionInternal(session);
+        return session;
+    }
+
+    // ================= INTERNAL STOP =================
+    private void stopRunningSessionInternal(Session session) {
 
         session.setEndTime(LocalDateTime.now());
         session.setStatus(SessionStatus.FINISHED);
@@ -83,7 +102,7 @@ public class SessionService {
         computer.setStatus(ComputerStatus.AVAILABLE);
         computerRepository.save(computer);
 
-        return sessionRepository.save(session);
+        sessionRepository.save(session);
     }
-
 }
+.
