@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +28,12 @@ public class SessionService {
     public Session start(Long computerId, SessionStartRequest req) {
 
         // 1. Stop running session if exists
-        sessionRepository.findByComputerIdAndStatus(computerId, SessionStatus.RUNNING)
-                .ifPresent(this::stopRunningSessionInternal);
+        List<Session> sessions =
+                sessionRepository.findAllByComputerIdAndStatus(
+                        computerId, SessionStatus.RUNNING
+                );
+
+        sessions.forEach(this::stopRunningSessionInternal);
 
         // 2. Load computer
         Computer computer = computerRepository.findById(computerId)
@@ -76,18 +81,28 @@ public class SessionService {
     }
 
     // ================= PUBLIC STOP =================
+    @Transactional
     public Session stopRunningSession(Long computerId) {
 
-        Session session = sessionRepository
-                .findByComputerIdAndStatus(computerId, SessionStatus.RUNNING)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Session.class,
-                        "computerId & status",
-                        computerId + " / " + SessionStatus.RUNNING
-                ));
+        List<Session> sessions = sessionRepository
+                .findAllByComputerIdAndStatus(computerId, SessionStatus.RUNNING);
 
-        stopRunningSessionInternal(session);
-        return session;
+        if (sessions.isEmpty()) {
+            throw new EntityNotFoundException(
+                    Session.class,
+                    "computerId & status",
+                    computerId + " / " + SessionStatus.RUNNING
+            );
+        }
+
+        Session lastStopped = null;
+
+        for (Session session : sessions) {
+            stopRunningSessionInternal(session);
+            lastStopped = session;
+        }
+
+        return lastStopped;
     }
 
     // ================= INTERNAL STOP =================
@@ -105,4 +120,3 @@ public class SessionService {
         sessionRepository.save(session);
     }
 }
-.

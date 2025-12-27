@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findByStatus(SessionStatus status);
-    Optional<Session> findByComputerIdAndStatus(Long computerId, SessionStatus status);
+    List<Session> findByComputerIdAndStatus(Long computerId, SessionStatus status);
 
     Page<Session> findAllByOrderByStatusDescIdDesc(Pageable pageable);
     Page<Session> findByComputerId(Long computerId, Pageable pageable);
