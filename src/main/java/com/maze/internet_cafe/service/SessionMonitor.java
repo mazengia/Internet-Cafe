@@ -1,60 +1,138 @@
 package com.maze.internet_cafe.service;
 
-import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 @Component
+@RequiredArgsConstructor
 public class SessionMonitor {
 
     private final AgentService agentService;
 
-    public SessionMonitor(AgentService agentService) {
-        this.agentService = agentService;
-    }
+    private final String os = System.getProperty("os.name").toLowerCase();
 
     @PostConstruct
     public void init() {
-        // Run in a separate thread so it doesn't block the main application
-        Thread monitorThread = new Thread(this::listenToUbuntuEvents);
-        monitorThread.setDaemon(true);
-        monitorThread.start();
+        System.out.println(">>> SessionMonitor initialized (" + os + ")");
+
+        if (isWindows()) {
+            startWindowsListener();
+        } else if (isLinux()) {
+            startLinuxListener();
+        } else {
+            System.out.println(">>> OS lock detection not supported");
+        }
     }
 
-    private void listenToUbuntuEvents() {
-        System.out.println(">>> Initializing Ubuntu D-Bus Event Listener...");
+    /* ===================== WINDOWS ===================== */
 
-        // Command to watch for GNOME ScreenSaver signals
-        String[] cmd = {
-                "dbus-monitor",
-                "--session",
-                "type='signal',interface='org.gnome.ScreenSaver'"
-        };
+    private void startWindowsListener() {
+        Thread t = new Thread(this::listenWindowsEvents, "windows-session-monitor");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void listenWindowsEvents() {
+        System.out.println(">>> Listening for Windows lock/unlock events");
+
+        String psScript = """
+            Register-WmiEvent -Class Win32_SessionChangeEvent -Action {
+                $type = $Event.SourceEventArgs.NewEvent.SessionChangeType
+                if ($type -eq 7) { Write-Output 'LOCK' }
+                if ($type -eq 8) { Write-Output 'UNLOCK' }
+            }
+            while ($true) { Wait-Event }
+            """;
 
         try {
-            Process process = Runtime.getRuntime().exec(cmd);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
+            Process process = new ProcessBuilder(
+                    "powershell",
+                    "-NoLogo",
+                    "-NoProfile",
+                    "-ExecutionPolicy", "Bypass",
+                    "-Command", psScript
+            ).start();
 
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8)
+            );
+
+            String line;
             while ((line = reader.readLine()) != null) {
-                // Ubuntu sends 'boolean true' when Locked
-                if (line.contains("boolean true")) {
-                    System.out.println(">>> [OS EVENT] Lock detected.");
-                    agentService.stopActiveSession();
-                    LockService.lock(); // Ensure the local overlay is active
-                }
-                // Ubuntu sends 'boolean false' when Unlocked
-                else if (line.contains("boolean false")) {
-                    System.out.println(">>> [OS EVENT] Unlock detected. Restarting session...");
-                    agentService.restartSession();
-                    // Optional: re-connect WS if it dropped during sleep
-                    agentService.connectWebSocket();
+                switch (line.trim()) {
+                    case "LOCK" -> handleLock("WINDOWS");
+                    case "UNLOCK" -> handleUnlock("WINDOWS");
                 }
             }
         } catch (Exception e) {
-            System.err.println(">>> Monitor Error: " + e.getMessage());
-            // Fallback to simple polling if dbus-monitor is missing
+            System.err.println(">>> Windows session monitor failed");
+            e.printStackTrace();
         }
+    }
+
+    /* ===================== LINUX (GNOME) ===================== */
+
+    private void startLinuxListener() {
+        Thread t = new Thread(this::listenLinuxEvents, "linux-session-monitor");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void listenLinuxEvents() {
+        System.out.println(">>> Listening for GNOME lock/unlock events");
+
+        try {
+            Process process = new ProcessBuilder(
+                    "dbus-monitor",
+                    "--session",
+                    "type='signal',interface='org.gnome.ScreenSaver'"
+            ).start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8)
+            );
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("boolean true")) {
+                    handleLock("LINUX");
+                }
+                if (line.contains("boolean false")) {
+                    handleUnlock("LINUX");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(">>> Linux session monitor failed");
+            e.printStackTrace();
+        }
+    }
+
+    /* ===================== HANDLERS ===================== */
+
+    private void handleLock(String source) {
+        System.out.println(">>> " + source + " SESSION LOCKED");
+        agentService.stopActiveSession();
+        LockService.lock();
+    }
+
+    private void handleUnlock(String source) {
+        System.out.println(">>> " + source + " SESSION UNLOCKED");
+        agentService.restartSession();
+        agentService.connectWebSocket();
+    }
+
+    /* ===================== OS CHECK ===================== */
+
+    private boolean isLinux() {
+        return os.contains("linux");
+    }
+
+    private boolean isWindows() {
+        return os.contains("win");
     }
 }

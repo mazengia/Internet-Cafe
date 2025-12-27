@@ -14,7 +14,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findByStatus(SessionStatus status);
     Optional<Session> findByComputerIdAndStatus(Long computerId, SessionStatus status);
 
-    Page<Session> findAllByOrderByIdDesc(Pageable pageable);
+    Page<Session> findAllByOrderByStatusDescIdDesc(Pageable pageable);
     Page<Session> findByComputerId(Long computerId, Pageable pageable);
 
      @Query("SELECT function('date', s.endTime), COUNT(s), SUM(s.totalMinutes), SUM(s.totalCost) " +

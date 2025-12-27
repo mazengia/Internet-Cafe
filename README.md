@@ -79,7 +79,7 @@ Branch management
 - (Admin-only) The code contains a JPA `Branch` entity. Branches are created in tests via repository; you can create a simple controller or use data SQL if you need seed data.
 
 Computer management
-- POST /api/v1/computers
+- POST /computers
   - Roles: ADMIN or AGENT
   - Body example:
     {
@@ -116,7 +116,7 @@ curl -s -X POST http://localhost:8052/api/auth/login \
 - Create a computer (replace <token>):
 
 ```bash
-curl -s -X POST http://localhost:8052/api/v1/computers \
+curl -s -X POST http://localhost:8052/computers \
   -H "Authorization: Bearer <token>" \
   -H 'Content-Type: application/json' \
   -d '{"name":"PC-01","macAddress":"AA:BB:CC:DD:EE:FF","ipAddress":"10.0.0.2","osType":"WINDOWS","branchId":1}'

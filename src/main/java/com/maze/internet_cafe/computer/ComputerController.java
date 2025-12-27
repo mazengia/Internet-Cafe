@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/computers")
+@RequestMapping("/computers")
 public class ComputerController {
 
     private final ComputerService computerService;

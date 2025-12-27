@@ -77,7 +77,7 @@ public class ComputerService {
                 if (computer.getStatus().equals(ComputerStatus.LOCKED)) {
                     LockService.lock();
                 }
-                if (computer.getStatus().equals(ComputerStatus.OFFLINE)) {
+                if (computer.getStatus().equals(ComputerStatus.SHUTDOWN)) {
                     LockService.shutdown();
                 }
             });
@@ -136,7 +136,7 @@ public class ComputerService {
                 new ComputerCommand(computerId, "LOCK")
         );
 
-        computer.setStatus(ComputerStatus.OFFLINE);
+        computer.setStatus(ComputerStatus.SHUTDOWN);
         computerRepository.save(computer);
 
     }

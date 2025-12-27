@@ -55,7 +55,7 @@ public class SessionService {
     }
 
     public Page<Session> findAll(Pageable pageable) {
-        return sessionRepository.findAllByOrderByIdDesc(pageable);
+        return sessionRepository.findAllByOrderByStatusDescIdDesc(pageable);
     }
 
     public Session get(Long id) {

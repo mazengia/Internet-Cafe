@@ -72,7 +72,7 @@ public class SecurityConfig {
                                 "/static/**",
                                 "/assets/**",
                                 "/template/**",
-                                "/api/v1/computers/**",
+                                "/computers/**",
                                 "/sessions/**"
                         ).permitAll()
 

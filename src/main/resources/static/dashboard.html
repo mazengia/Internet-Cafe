@@ -164,7 +164,7 @@
             let statusBadge = `<span class="pill muted">AVAILABLE</span>`;
             if (c.status === 'IN_USE') statusBadge = `<span class="pill success">IN USE</span>`;
             if (c.status === 'LOCKED') statusBadge = `<span class="pill danger">LOCKED</span>`;
-            if (c.status === 'OFFLINE') statusBadge = `<span class="pill danger">OFFLINE</span>`;
+            if (c.status === 'SHUTDOWN') statusBadge = `<span class="pill danger">SHUTDOWN</span>`;
 
 
             const startClass = (c.status !== 'AVAILABLE') ? ' d-none' : '';
@@ -245,7 +245,7 @@
 
         async function fetchComputers() {
             try {
-                const res = await fetch('/api/v1/computers?page=0&size=1000', authOptions());
+                const res = await fetch('/computers?page=0&size=1000', authOptions());
                 if (!res.ok) throw new Error('Failed to load computers');
                 const data = await res.json();
                 const comps = Array.isArray(data) ? data : (data.content || []);
@@ -341,7 +341,7 @@
                 const id = t.dataset.id;
                 if (!confirm('Lock this computer?')) return;
                 try {
-                    const r = await fetch(`/api/v1/computers/${id}/lock`, authOptions({method: 'POST'}));
+                    const r = await fetch(`/computers/${id}/lock`, authOptions({method: 'POST'}));
                     if (!r.ok) return alert('Lock failed');
                     state.computers[id].status = 'LOCKED';
                     renderGrid();
@@ -355,7 +355,7 @@
                 const id = t.dataset.id;
                 if (!confirm('Are you sure you want to shutdown this computer?')) return;
                 try {
-                    const r = await fetch(`/api/v1/computers/${id}/shoutdown`, authOptions({method: 'POST'}));
+                    const r = await fetch(`/computers/${id}/shoutdown`, authOptions({method: 'POST'}));
                     if (!r.ok) return alert('Shutdown failed');
                     state.computers[id].status = 'LOCKED'; // Optionally mark as LOCKED
                     renderGrid();
