@@ -29,7 +29,7 @@
 //    private final SessionRepository sessionRepository;
 //    private final BillingService billingService;
 //
-//    @Scheduled(fixedDelay = 15_000)
+//    @Scheduled(fixedDelay = 40_000)
 //    @Transactional
 //    public void checkHeartbeats() {
 //        System.out.println("tttttttt=> Checking heartbeats...");

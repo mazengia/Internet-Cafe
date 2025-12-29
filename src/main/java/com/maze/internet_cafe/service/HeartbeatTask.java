@@ -3,28 +3,22 @@ package com.maze.internet_cafe.service;
 import com.maze.internet_cafe.utils.NetworkUtil;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 public final class HeartbeatTask {
 
     private static ScheduledExecutorService executor;
     private static final AtomicBoolean running = new AtomicBoolean(false);
+    private static final int HEARTBEAT_INTERVAL_SECONDS = 10;
 
-    private HeartbeatTask() {
-        // utility class
-    }
-
-    /* ===================== START ===================== */
+    private HeartbeatTask() { }
 
     public static synchronized void start() {
-        if (running.get()) {
-            return; // already running
-        }
-
+        if (running.get()) return;
         running.set(true);
 
         executor = Executors.newSingleThreadScheduledExecutor(r -> {
@@ -33,23 +27,22 @@ public final class HeartbeatTask {
             return t;
         });
 
-        executor.scheduleAtFixedRate(
+        // Send first heartbeat immediately
+        executor.submit(HeartbeatTask::sendHeartbeat);
+
+        // Schedule subsequent heartbeats with fixed delay after completion
+        executor.scheduleWithFixedDelay(
                 HeartbeatTask::sendHeartbeat,
-                0,
-                10,
+                HEARTBEAT_INTERVAL_SECONDS,
+                HEARTBEAT_INTERVAL_SECONDS,
                 TimeUnit.SECONDS
         );
 
         System.out.println(">>> Heartbeat started");
     }
 
-    /* ===================== STOP ===================== */
-
     public static synchronized void stop() {
-        if (!running.get()) {
-            return;
-        }
-
+        if (!running.get()) return;
         running.set(false);
 
         if (executor != null) {
@@ -60,8 +53,8 @@ public final class HeartbeatTask {
         System.out.println(">>> Heartbeat stopped");
     }
 
-
     private static void sendHeartbeat() {
+        System.out.println(">>> Sending heartbeat...");
         try {
             WebClient.create(AgentService.SERVER)
                     .post()
@@ -69,9 +62,9 @@ public final class HeartbeatTask {
                     .bodyValue(Map.of("name", NetworkUtil.machineName()))
                     .retrieve()
                     .bodyToMono(Void.class)
-                    .timeout(java.time.Duration.ofSeconds(3))
+                    .timeout(Duration.ofSeconds(13))
                     .subscribe(
-                            v -> { },
+                            v -> System.out.println(">>> Heartbeat success"),
                             e -> System.err.println(">>> Heartbeat failed: " + e.getMessage())
                     );
         } catch (Exception e) {

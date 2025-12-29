@@ -63,10 +63,8 @@ public class ComputerService {
     }
 
 
-    public Page<ComputerDto> list(Long branchId, Pageable pageable) {
-//        Page<Computer> page = computerRepository.findByBranchId(branchId, pageable);
-        Page<Computer> page = computerRepository.findAll(pageable);
-        return page.map(this::toDto);
+    public Page<Computer> list(Pageable pageable) {
+        return computerRepository.findAll(pageable);
     }
 
     public void handleHeartbeat(String name) {

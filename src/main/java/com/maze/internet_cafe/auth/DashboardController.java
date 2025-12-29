@@ -14,9 +14,9 @@ public class DashboardController {
         this.computerService = computerService;
     }
 
-    @GetMapping({"/","/dashboard"})
+    @GetMapping({"/", "/dashboard"})
     public String dashboard(Model model) {
-        model.addAttribute("computers", computerService.list(null, org.springframework.data.domain.Pageable.unpaged()).getContent());
+        model.addAttribute("computers", computerService.list(org.springframework.data.domain.Pageable.unpaged()).getContent());
         return "index";
     }
 }

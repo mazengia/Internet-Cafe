@@ -56,7 +56,6 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/api/agents/heartbeat",
                                 "/ws/**",
                                 // Login and auth should remain public
                                 "/login",

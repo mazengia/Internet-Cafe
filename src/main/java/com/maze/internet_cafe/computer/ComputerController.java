@@ -31,20 +31,13 @@ public class ComputerController {
 
     //    @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public ResponseEntity<Page<ComputerDto>> list(
-            @RequestParam(required = false) Long branchId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ComputerDto> result = computerService.list(branchId, pageable);
-        return ResponseEntity.ok(result);
+    public Page<Computer> list(Pageable pageable) {
+        return computerService.list(pageable);
     }
 
     //    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<ComputerDto> get(@PathVariable Long id) {
-        System.out.println("bbbb=");
         Computer c = computerService.findById(id);
         return ResponseEntity.ok(computerService.toDto(c));
     }
@@ -55,10 +48,12 @@ public class ComputerController {
         computerService.handleHeartbeat(name);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/{id}/lock")
     public void lock(@PathVariable Long id) {
         computerService.lockComputer(id);
     }
+
     @PostMapping("/{id}/shoutdown")
     public void shoutdownComputer(@PathVariable Long id) {
         computerService.shoutdownComputer(id);
