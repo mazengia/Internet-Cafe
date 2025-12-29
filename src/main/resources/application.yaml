@@ -6,7 +6,7 @@ spring:
   datasource:
 #    local
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.1.81.62:1433;encrypt=false;databaseName=shareholder_attendance
+    url: jdbc:sqlserver://10.1.81.62:1433;encrypt=false;databaseName=internet_cafe
     username: sa
     password: P@ss1234
 #live

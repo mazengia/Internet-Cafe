@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
@@ -44,7 +45,7 @@ public class ComputerService {
 
         computer.setName(dto.getName());
         computer.setIpAddress(dto.getIpAddress());
-        computer.setLastHeartbeat(LocalDateTime.now());
+        computer.setLastHeartbeat(Instant.now());
 
         if (dto.getOsType() != null) {
             try {
@@ -72,7 +73,7 @@ public class ComputerService {
         if (name != null) {
             computerRepository.findByName(name).ifPresent(computer -> {
                 System.out.println(" computer status: " + computer.getStatus());
-                computer.setLastHeartbeat(java.time.LocalDateTime.now());
+                computer.setLastHeartbeat(Instant.now());
                 computerRepository.save(computer);
                 if (computer.getStatus().equals(ComputerStatus.LOCKED)) {
                     LockService.lock();

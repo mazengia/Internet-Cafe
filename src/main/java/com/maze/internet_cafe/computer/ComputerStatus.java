@@ -4,5 +4,6 @@ public enum ComputerStatus {
     AVAILABLE,
     IN_USE,
     LOCKED,
-    SHUTDOWN
+    SHUTDOWN,
+    SHUTDOWN_SUDDENLY
 }

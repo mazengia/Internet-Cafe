@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,5 +34,5 @@ public class Computer  extends Auditable {
     @ManyToOne
     private Branch branch;
 
-    private LocalDateTime lastHeartbeat;
+    private Instant lastHeartbeat;
 }
