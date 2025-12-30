@@ -71,7 +71,7 @@ public class HeartbeatMonitor {
                         + " for computer " + computer.getName());
             }
 
-            computer.setStatus(ComputerStatus.SHUTDOWN);
+            computer.setStatus(ComputerStatus.SHUTDOWN_SUDDENLY);
             computerRepository.save(computer);
         }
     }
