@@ -51,6 +51,9 @@ Running the Application
    ./mvnw spring-boot:run
    # or
    java -jar target/internet-cafe-0.0.1-SNAPSHOT.jar
+   # or if you want to run in background on Linux: and log output to a file
+   nohup java -jar target/internet-cafe-0.0.1-SNAPSHOT.jar >> /home/ubuntu/internet-cafe/startup.log 2>&1 &
+
    ```
 3. **Test:**
    ```bash
