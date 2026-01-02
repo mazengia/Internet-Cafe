@@ -79,7 +79,7 @@
             position: fixed;
             top: 60px;
             left: 0;
-            width: 220px;
+            width: 200px;
             overflow-y: auto;
         }
 
@@ -108,10 +108,11 @@
 
         /* Main content */
         #app-content {
-            margin-left: 220px;
+            margin-left: 200px;
             margin-top: 60px;
             background: darkslategrey;
             height: 100vh;
+            overflow-y: auto;
         }
 
         /* Glass card */
@@ -137,6 +138,36 @@
                 padding-top: 140px;
             }
         }
+        /* Footer */
+        .footer {
+            width: 100%;
+            background: transparent;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .footer .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: var(--card-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+            color: #dce0f0;
+            font-size: 0.85rem;
+        }
+
+        .footer .glass:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 576px) {
+            .footer .glass {
+                font-size: 0.75rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
     </style>
 </head>
 
@@ -172,8 +203,13 @@
 
 <!-- Main content -->
 <main id="app-content">
-    <!-- Dynamic content loaded here -->
 </main>
+
+<footer class="footer mt-auto py-3 text-center">
+    <div class="glass d-inline-block px-4 py-2">
+        <small>© <span id="current-year"></span> Internet Cafe • All Rights Reserved</small>
+    </div>
+</footer>
 
 <!-- Mobile sidebar -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarOffcanvas">
@@ -251,5 +287,9 @@
         loadPage('/dashboard.html');
     });
 </script>
+<script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>
