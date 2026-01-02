@@ -1,215 +1,338 @@
 <div class="container-fluid py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-xl-10">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <div>
-          <h2 class="mb-0">Users</h2>
-          <small class="text-muted">Manage user accounts, roles and access</small>
-        </div>
-        <div class="d-flex gap-2 align-items-center">
-          <input id="search-users" class="form-control form-control-sm" placeholder="Search username or name" style="width:260px">
-          <button id="open-create" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal"><i class="bi bi-plus-lg me-1"></i>Create</button>
-        </div>
-      </div>
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
 
-      <div class="glass p-3 mb-3">
-        <form id="create-user-form" class="row g-2 align-items-center">
-          <div class="col-12 col-md-4">
-            <label for="u-username" class="form-label visually-hidden">Username</label>
-            <input id="u-username" class="form-control" placeholder="Username" aria-label="New username">
-          </div>
-          <div class="col-12 col-md-3">
-            <label for="u-name" class="form-label visually-hidden">Name</label>
-            <input id="u-name" class="form-control" placeholder="Full name" aria-label="New name">
-          </div>
-          <div class="col-12 col-md-3">
-            <label for="u-password" class="form-label visually-hidden">Password</label>
-            <input id="u-password" class="form-control" placeholder="Password" type="password" aria-label="New password">
-          </div>
-          <div class="col-12 col-md-1">
-            <label for="u-roles" class="form-label visually-hidden">Roles</label>
-            <select id="u-roles" class="form-select form-select-sm" aria-label="New roles" multiple size="3"></select>
-          </div>
-          <div class="col-12 col-md-1 text-end">
-            <button type="submit" class="btn btn-sm btn-success w-100">Add</button>
-          </div>
-        </form>
-      </div>
+            <!-- Header & Actions -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-2">
+                <div>
+                    <h2 class="mb-0">Users</h2>
+                    <small class="text-muted">Manage user accounts, roles and access</small>
+                </div>
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    <input id="search-users" class="form-control form-control-sm" placeholder="Search username or name"
+                           style="width:260px">
+                    <button id="open-create" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#createUserModal">
+                        <i class="bi bi-plus-lg me-1"></i>Create
+                    </button>
+                </div>
+            </div>
 
-      <div class="glass p-3">
-        <div class="table-responsive" id="users-table-wrap">
-          <table class="table table-borderless table-hover align-middle" id="users-table">
-            <thead>
-              <tr class="text-muted small text-uppercase"><th style="width:6rem">ID</th><th>Username</th><th>Name</th><th style="width:20%">Roles</th><th style="width:16%" class="text-end">Action</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+            <!-- Create User Form -->
+            <div class="glass p-3 mb-3">
+                <form id="create-user-form" class="row g-2 align-items-center">
+                    <div class="col-12 col-md-4">
+                        <input id="u-username" class="form-control" placeholder="Username" aria-label="New username">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <input id="u-name" class="form-control" placeholder="Full name" aria-label="New name">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <input id="u-password" type="password" class="form-control" placeholder="Password"
+                               aria-label="New password">
+                    </div>
+                    <div class="col-12 col-md-1">
+                        <select id="u-roles" class="form-select form-select-sm" multiple size="3"
+                                aria-label="New roles"></select>
+                    </div>
+                    <div class="col-12 col-md-1 text-end">
+                        <button type="submit" class="btn btn-sm btn-success w-100">Add</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Users Table -->
+            <div class="glass p-3">
+                <div class="table-responsive" id="users-table-wrap">
+                    <table class="table table-borderless table-hover align-middle" id="users-table">
+                        <thead>
+                        <tr class="text-muted small text-uppercase">
+                            <th style="width:6rem">ID</th>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th style="width:20%">Roles</th>
+                            <th style="width:16%" class="text-end">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="users-empty" class="text-center text-muted py-3 d-none">No users found</div>
+            </div>
         </div>
-        <div id="users-empty" class="text-center text-muted py-3 d-none">No users found</div>
-      </div>
     </div>
-  </div>
 </div>
 
-<!-- Edit modal (kept IDs for JS) -->
+<!-- Edit Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit user</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="edit-id">
-        <div class="mb-3"><label for="edit-name" class="form-label">Name</label><input id="edit-name" class="form-control" aria-label="Edit name"></div>
-        <div class="mb-3"><label for="edit-password" class="form-label">Password (leave empty to keep)</label><input id="edit-password" class="form-control" type="password" aria-label="Edit password"></div>
-        <div class="mb-3"><label for="edit-roles" class="form-label">Roles (comma separated)</label><input id="edit-roles" class="form-control" aria-label="Edit roles"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" id="save-edit" class="btn btn-primary">Save</button>
-      </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light border">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit user</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id">
+                <div class="mb-3">
+                    <label for="edit-name" class="form-label">Name</label>
+                    <input id="edit-name" class="form-control" aria-label="Edit name">
+                </div>
+                <div class="mb-3">
+                    <label for="edit-password" class="form-label">Password (leave empty to keep)</label>
+                    <input id="edit-password" type="password" class="form-control" aria-label="Edit password">
+                </div>
+                <div class="mb-3">
+                    <label for="edit-roles" class="form-label">Roles (comma separated)</label>
+                    <input id="edit-roles" class="form-control" aria-label="Edit roles">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="save-edit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <style>
-  /* Users fragment styles */
-  #users-table thead tr { border-bottom:1px solid rgba(255,255,255,0.03); }
-  #users-table tbody tr { transition: background .15s ease, transform .08s ease; }
-  #users-table tbody tr:hover { background: linear-gradient(90deg, rgba(124,58,237,0.06), rgba(6,182,212,0.02)); transform: translateY(-2px); }
-  .role-badge { display:inline-block; background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:.25rem .5rem; border-radius:999px; font-size:.8rem; color:#eaf2ff; border:1px solid rgba(255,255,255,0.04); margin-right:6px }
-  @media (max-width:767px){
-    #users-table thead { display:none }
-    #users-table tbody td { display:block; width:100%; padding:0.75rem 0; border-bottom:1px solid rgba(255,255,255,0.03) }
-    #users-table tbody tr { display:block; margin-bottom:12px }
-    #users-table tbody td:before{ content: attr(data-label); display:block; font-size:.75rem; color:var(--bs-muted); margin-bottom:.25rem }
-    .form-control[placeholder] { font-size:.95rem }
-  }
-  /* make modal readable on dark background */
-  #editUserModal .modal-content { background: #071426; color: #eaf2ff; border: 1px solid rgba(255,255,255,0.04); }
-  #editUserModal .form-label { color: #cfe8ff; }
-  /* style the role select */
-  select[multiple] { min-height: 60px; }
+    /* Table & badges */
+    #users-table thead tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    #users-table tbody tr {
+        transition: background .15s, transform .08s;
+    }
+
+    #users-table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(124, 58, 237, 0.06), rgba(6, 182, 212, 0.02));
+        transform: translateY(-2px);
+    }
+
+    .role-badge {
+        display: inline-block;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+        padding: .25rem .5rem;
+        border-radius: 999px;
+        font-size: .8rem;
+        /*color:#eaf2ff;*/
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        margin-right: 6px;
+    }
+
+    /* Responsive table for small screens */
+    @media (max-width: 767px) {
+        #users-table thead {
+            display: none;
+        }
+
+        #users-table tbody td {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        #users-table tbody tr {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        #users-table tbody td:before {
+            content: attr(data-label);
+            display: block;
+            font-size: .75rem;
+            color: var(--bs-muted);
+            margin-bottom: .25rem;
+        }
+
+        .form-control[placeholder] {
+            font-size: .95rem;
+        }
+    }
+
+    select[multiple] {
+        min-height: 60px;
+    }
 </style>
 
 <script>
-// keep original initUsers logic but add client-side search filter hook
-function initUsers(){
-  const state = { users: [] };
-  const tbody = document.querySelector('#users-table tbody');
+    (async function initUsers() {
+        const state = {users: []};
+        const tbody = document.querySelector('#users-table tbody');
+        const emptyEl = document.getElementById('users-empty');
 
-  // Populate role selects based on loaded users' authorities. Fallback to common roles.
-  function populateRoleOptions(){
-    const roleSet = new Set();
-    (state.users || []).forEach(u=> (u.authorities||[]).forEach(a=> roleSet.add(a.name)));
-    if(roleSet.size===0){ roleSet.add('ROLE_ADMIN'); roleSet.add('ROLE_USER'); }
-    const options = Array.from(roleSet).sort();
-    ['u-roles','edit-roles'].forEach(id=>{
-      const el = document.getElementById(id);
-      if(!el) return;
-      // if it's an input (old fallback), skip
-      if(el.tagName.toLowerCase() !== 'select') return;
-      el.innerHTML = '';
-      options.forEach(r=>{ const opt = document.createElement('option'); opt.value = r; opt.textContent = r.replace(/^ROLE_/, ''); el.appendChild(opt); });
-    });
-  }
+        const authOptions = (extra = {}) => {
+            const token = localStorage.getItem('jwt_token');
+            const headers = {'Content-Type': 'application/json'};
+            if (token) headers['Authorization'] = 'Bearer ' + token;
+            return {headers, ...extra};
+        };
 
-  function getSelectedRoles(id){
-    const el = document.getElementById(id);
-    if(!el) return [];
-    if(el.tagName.toLowerCase()==='select'){ return Array.from(el.selectedOptions).map(o=>o.value); }
-    // fallback for plain input
-    return (el.value||'').split(',').map(s=>s.trim()).filter(Boolean);
-  }
-
-  function authOptions(extra){ const token = localStorage.getItem('jwt_token'); const headers={'Content-Type':'application/json'}; const opts={headers}; if(token) headers['Authorization']='Bearer '+token; else opts.credentials='same-origin'; if(extra?.method) opts.method=extra.method; if(extra?.body) opts.body=extra.body; return opts; }
-
-  function render(filtered){
-    const list = filtered || state.users;
-    tbody.innerHTML = '';
-    if(!list || list.length===0){ document.getElementById('users-empty').classList.remove('d-none'); return; } else { document.getElementById('users-empty').classList.add('d-none'); }
-    list.forEach(u=>{
-      const tr = document.createElement('tr');
-      const roles = (u.authorities||[]).map(a=>a.name.replace(/^ROLE_/, '')).join(',');
-      tr.innerHTML = `
+        const render = (list = state.users) => {
+            tbody.innerHTML = '';
+            if (!list.length) {
+                emptyEl.classList.remove('d-none');
+                return;
+            }
+            emptyEl.classList.add('d-none');
+            list.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
         <td data-label="ID">${u.id}</td>
         <td data-label="Username"><strong>${u.username}</strong></td>
-        <td data-label="Name">${u.name||''}</td>
-        <td data-label="Roles">${(u.authorities||[]).map(a=>`<span class="role-badge">${a.name}</span>`).join(' ')}</td>
+        <td data-label="Name">${u.name || ''}</td>
+        <td data-label="Roles">${(u.authorities || []).map(a => `<span class="role-badge">${a.name}</span>`).join(' ')}</td>
         <td data-label="Action" class="text-end">
           <button class="btn btn-sm btn-outline-primary edit-user" data-id="${u.id}"><i class="bi bi-pencil"></i> Edit</button>
           <button class="btn btn-sm btn-outline-danger delete-user ms-2" data-id="${u.id}"><i class="bi bi-trash"></i></button>
         </td>`;
-      tbody.appendChild(tr);
-    });
-  }
+                tbody.appendChild(tr);
+            });
+        };
 
-  async function load(){
-    try{
-      const res = await fetch('/api/v1/admin/users', authOptions());
-      if(!res.ok){ tbody.innerHTML = '<tr><td colspan="5">Unable to load users</td></tr>'; return; }
-      state.users = await res.json(); render();
-      populateRoleOptions();
-    }catch(e){ console.error(e); tbody.innerHTML = '<tr><td colspan="5">Error loading users</td></tr>'; }
-  }
+        const load = async () => {
+            try {
+                const res = await fetch('/api/v1/admin/users', authOptions());
+                if (!res.ok) throw new Error('Unable to load users');
+                state.users = await res.json();
+                render();
+                populateRoleOptions();
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5">Error loading users</td></tr>';
+                console.error(e);
+            }
+        };
 
-  // create
-  document.getElementById('create-user-form').addEventListener('submit', async (ev)=>{
-    ev.preventDefault();
-    const username = document.getElementById('u-username').value.trim();
-    const name = document.getElementById('u-name').value.trim();
-    const password = document.getElementById('u-password').value;
-    const roles = getSelectedRoles('u-roles');
-    try{
-      const res = await fetch('/api/v1/admin/users', { method:'POST', headers: authOptions().headers, body: JSON.stringify({username,name,password,roles}) });
-      if(!res.ok){ alert('Create failed: '+await res.text()); return; }
-      document.getElementById('u-username').value=''; document.getElementById('u-name').value=''; document.getElementById('u-password').value='';
-      // clear selected options
-      const uroles = document.getElementById('u-roles'); if(uroles && uroles.tagName.toLowerCase()==='select'){ Array.from(uroles.options).forEach(o=>o.selected=false); } else if(uroles) uroles.value='';
-      await load();
-    }catch(e){ console.error(e); alert('Create error'); }
-  });
+        const populateRoleOptions = () => {
+            const roleSet = new Set();
+            state.users.forEach(u => (u.authorities || []).forEach(a => roleSet.add(a.name)));
+            if (!roleSet.size) ['ROLE_ADMIN', 'ROLE_USER'].forEach(r => roleSet.add(r));
+            const options = Array.from(roleSet).sort();
+            ['u-roles', 'edit-roles'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || el.tagName.toLowerCase() !== 'select') return;
+                el.innerHTML = '';
+                options.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r;
+                    opt.textContent = r.replace(/^ROLE_/, '');
+                    el.appendChild(opt);
+                });
+            });
+        };
 
-  // delegated edit/delete
-  document.querySelector('#users-table').addEventListener('click', async (e)=>{
-    if(e.target.matches('.delete-user') || e.target.closest('.delete-user')){
-      const btn = e.target.closest('.delete-user'); const id = btn.dataset.id; if(!confirm('Delete user '+id+'?')) return; try{ const res=await fetch('/api/v1/admin/users/'+id, { method:'DELETE', headers: authOptions().headers }); if(!res.ok){ alert('Delete failed'); return; } await load(); }catch(err){ console.error(err); alert('Delete error'); }
-    }
-    if(e.target.matches('.edit-user') || e.target.closest('.edit-user')){
-      const btn = e.target.closest('.edit-user'); const id = btn.dataset.id; const u = state.users.find(x=>String(x.id)===String(id)); if(!u){ alert('User not found'); return; }
-      document.getElementById('edit-id').value = u.id; document.getElementById('edit-name').value = u.name||''; document.getElementById('edit-password').value='';
-      // set selected options in edit-roles select
-      const editRolesEl = document.getElementById('edit-roles');
-      if(editRolesEl && editRolesEl.tagName.toLowerCase()==='select'){
-        const vals = (u.authorities||[]).map(a=>a.name);
-        Array.from(editRolesEl.options).forEach(o=> o.selected = vals.includes(o.value));
-      } else {
-        document.getElementById('edit-roles').value = (u.authorities||[]).map(a=>a.name).join(',');
-      }
-      new bootstrap.Modal(document.getElementById('editUserModal')).show();
-    }
-  });
+        const getSelectedRoles = id => {
+            const el = document.getElementById(id);
+            if (!el) return [];
+            return el.tagName.toLowerCase() === 'select' ? Array.from(el.selectedOptions).map(o => o.value) : (el.value || '').split(',').map(s => s.trim()).filter(Boolean);
+        };
 
-  // save edit
-  document.getElementById('save-edit').addEventListener('click', async ()=>{
-    const id = document.getElementById('edit-id').value; const name = document.getElementById('edit-name').value; const password = document.getElementById('edit-password').value;
-    const roles = getSelectedRoles('edit-roles');
-    try{ const res = await fetch('/api/v1/admin/users/'+id, { method:'PUT', headers: authOptions().headers, body: JSON.stringify({name,password,roles}) }); if(!res.ok){ alert('Update failed: '+await res.text()); return; } bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide(); await load(); }catch(e){ console.error(e); alert('Update error'); }
-  });
+        // Create user
+        document.getElementById('create-user-form').addEventListener('submit', async ev => {
+            ev.preventDefault();
+            const username = document.getElementById('u-username').value.trim();
+            const name = document.getElementById('u-name').value.trim();
+            const password = document.getElementById('u-password').value;
+            const roles = getSelectedRoles('u-roles');
 
-  // search filter
-  document.getElementById('search-users').addEventListener('input', (ev)=>{
-    const q = ev.target.value.trim().toLowerCase();
-    if(!q) return render();
-    const filtered = state.users.filter(u => (u.username||'').toLowerCase().includes(q) || (u.name||'').toLowerCase().includes(q) || (u.authorities||[]).some(a=>a.name.toLowerCase().includes(q)));
-    render(filtered);
-  });
+            try {
+                const res = await fetch('/api/v1/admin/users', {
+                    method: 'POST',
+                    headers: authOptions().headers,
+                    body: JSON.stringify({username, name, password, roles})
+                });
 
-  // init
-  load();
-}
+                const data = await res.json().catch(() => null);
+                if (!res.ok) {
+                    console.log("res=", data)
+                    // Show error from API if available
+                    const msg = data?.message || data?.error || await res.text() || 'Unknown error';
+                    alert('Create failed: ' + msg);
+                    return;
+                }
 
-// if fragment executed inline, call initUsers
-try{ if(typeof initUsers === 'function') initUsers(); }catch(e){}
+                // Success
+                alert('User saved successfully!');
+                ['u-username', 'u-name', 'u-password'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('u-roles')?.options?.forEach(o => o.selected = false);
+                await load();
+
+            } catch (e) {
+                console.error(e);
+                alert('Network or unexpected error: ' + e.message);
+            }
+        });
+
+        // Delegated edit/delete
+        tbody.parentElement.addEventListener('click', async e => {
+            const btn = e.target.closest('.delete-user, .edit-user');
+            if (!btn) return;
+            const id = btn.dataset.id;
+            if (btn.classList.contains('delete-user')) {
+                if (!confirm('Delete user ' + id + '?')) return;
+                try {
+                    const res = await fetch(`/api/v1/admin/users/${id}`, {
+                        method: 'DELETE',
+                        headers: authOptions().headers
+                    });
+                    if (!res.ok) {
+                        alert('Delete failed');
+                        return;
+                    }
+                    await load();
+                } catch (err) {
+                    console.error(err);
+                    alert('Delete error');
+                }
+            } else if (btn.classList.contains('edit-user')) {
+                const u = state.users.find(x => String(x.id) === String(id));
+                if (!u) {
+                    alert('User not found');
+                    return;
+                }
+                document.getElementById('edit-id').value = u.id;
+                document.getElementById('edit-name').value = u.name || '';
+                document.getElementById('edit-password').value = '';
+                const editRolesEl = document.getElementById('edit-roles');
+                if (editRolesEl?.tagName.toLowerCase() === 'select') {
+                    const vals = (u.authorities || []).map(a => a.name);
+                    Array.from(editRolesEl.options).forEach(o => o.selected = vals.includes(o.value));
+                } else document.getElementById('edit-roles').value = (u.authorities || []).map(a => a.name).join(',');
+                new bootstrap.Modal(document.getElementById('editUserModal')).show();
+            }
+        });
+
+        // Save edit
+        document.getElementById('save-edit').addEventListener('click', async () => {
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('edit-name').value;
+            const password = document.getElementById('edit-password').value;
+            const roles = getSelectedRoles('edit-roles');
+            try {
+                const res = await fetch(`/api/v1/admin/users/${id}`, {
+                    method: 'PUT',
+                    headers: authOptions().headers,
+                    body: JSON.stringify({name, password, roles})
+                });
+                if (!res.ok) {
+                    alert('Update failed: ' + await res.text());
+                    return;
+                }
+                bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+                await load();
+            } catch (e) {
+                console.error(e);
+                alert('Update error');
+            }
+        });
+
+        // Search filter
+        document.getElementById('search-users').addEventListener('input', ev => {
+            const q = ev.target.value.trim().toLowerCase();
+            render(q ? state.users.filter(u => [u.username, u.name].some(v => v?.toLowerCase().includes(q)) || (u.authorities || []).some(a => a.name.toLowerCase().includes(q))) : undefined);
+        });
+
+        await load();
+    })();
 </script>
