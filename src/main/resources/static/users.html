@@ -243,17 +243,21 @@
                     body: JSON.stringify({username, name, password, roles})
                 });
 
-                const data = await res.json().catch(() => null);
+                let msg;
+                try {
+                    const data = await res.json();
+                    msg = data?.message || data?.error;
+                } catch {
+                    msg = await res.text();
+                }
+
                 if (!res.ok) {
-                    console.log("res=", data)
-                    // Show error from API if available
-                    const msg = data?.message || data?.error || await res.text() || 'Unknown error';
-                    alert('Create failed: ' + msg);
+                    alert('Create failed: ' + (msg || 'Unknown error'));
                     return;
                 }
 
                 // Success
-                alert('User saved successfully!');
+                alert(msg || 'User saved successfully!');
                 ['u-username', 'u-name', 'u-password'].forEach(id => document.getElementById(id).value = '');
                 document.getElementById('u-roles')?.options?.forEach(o => o.selected = false);
                 await load();
@@ -262,6 +266,7 @@
                 console.error(e);
                 alert('Network or unexpected error: ' + e.message);
             }
+
         });
 
         // Delegated edit/delete
