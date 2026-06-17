@@ -42,3 +42,19 @@ logging:
     org.springframework.security: DEBUG
     feign:
       client: DEBUG
+
+
+
+#
+#render postgress
+#
+#
+#
+#
+#  | Field    | Value                                               |
+#  | -------- | --------------------------------------------------- |
+#  | Host     | dpg-d8p5ed1194ac738v1dtg-a.ohio-postgres.render.com |
+#  | Port     | 5432                                                |
+#  | Database | hrm_gqg5                                            |
+#  | Username | hrm_gqg5_user                                       |
+#  | Password | jobsuJxNdwb9W9qjWm6S5lRsvE4ReWXu                    |
